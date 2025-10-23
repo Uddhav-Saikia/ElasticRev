@@ -35,28 +35,43 @@ function ProductDetail() {
   const [simulationPrice, setSimulationPrice] = useState('');
   const [simulationResult, setSimulationResult] = useState(null);
 
-  const { data: product, isLoading: productLoading } = useQuery(
+  const { data: product, isLoading: productLoading, error: productError } = useQuery(
     ['product', id],
-    () => getProduct(id).then(res => res.data)
+    () => getProduct(id).then(res => res.data),
+    { retry: false }
   );
 
-  const { data: salesSummary } = useQuery(
+  const { data: salesSummary, error: salesError } = useQuery(
     ['sales-summary', id],
-    () => getSalesSummary({ product_id: id, days: 90 }).then(res => res.data)
+    () => getSalesSummary({ product_id: id, days: 90 }).then(res => res.data),
+    { enabled: !!id, retry: false }
   );
 
-  const { data: elasticity, refetch: refetchElasticity } = useQuery(
+  const { data: elasticity, refetch: refetchElasticity, error: elasticityError } = useQuery(
     ['elasticity', id],
-    () => getProductElasticity(id).then(res => res.data),
-    { enabled: !!product }
+    () => getProductElasticity(id).then(res => res.data).catch(err => {
+      // If 404, return null instead of throwing
+      if (err.response?.status === 404) {
+        return null;
+      }
+      throw err;
+    }),
+    { enabled: !!product, retry: false }
   );
 
-  const { data: curveData } = useQuery(
+  const { data: curveData, error: curveError } = useQuery(
     ['elasticity-curve', id],
-    () => getElasticityCurve(id).then(res => res.data),
-    { enabled: !!elasticity }
+    () => getElasticityCurve(id).then(res => res.data).catch(err => {
+      // If 404 or no elasticity, return null instead of throwing
+      if (err.response?.status === 404) {
+        return null;
+      }
+      throw err;
+    }),
+    { enabled: !!elasticity, retry: false }
   );
 
+  // Move handlers up here (before early returns cause issues)
   const handleCalculateElasticity = async () => {
     setCalculating(true);
     try {
@@ -78,7 +93,6 @@ function ProductDetail() {
       alert('Please enter a valid price');
       return;
     }
-
     try {
       const result = await simulateScenario({
         product_id: parseInt(id),
@@ -90,6 +104,21 @@ function ProductDetail() {
       alert('Simulation failed: ' + error.response?.data?.error);
     }
   };
+
+  // Error handling for all queries
+  if (productError) {
+    console.error('Product API error:', productError);
+    return <div className="card text-red-600">Error loading product: {productError.message}</div>;
+  }
+  if (salesError) {
+    console.error('Sales summary API error:', salesError);
+  }
+  if (elasticityError && elasticityError.response?.status !== 404) {
+    console.error('Elasticity API error:', elasticityError);
+  }
+  if (curveError && curveError.response?.status !== 404) {
+    console.error('Elasticity curve API error:', curveError);
+  }
 
   if (productLoading) {
     return (
@@ -103,13 +132,67 @@ function ProductDetail() {
     return <div className="card">Product not found</div>;
   }
 
-  // Prepare curve data for chart
-  const chartData = curveData ? curveData.prices.map((price, i) => ({
-    price: price.toFixed(2),
-    quantity: curveData.quantities[i].toFixed(0),
-    revenue: curveData.revenues[i].toFixed(0),
-    profit: curveData.profits[i].toFixed(0)
-  })) : [];
+  // Defensive: fallback values for product fields
+  let safeProduct = {
+    name: '',
+    sku: '',
+    category: '',
+    current_price: 0,
+    unit_cost: 0,
+    margin: 0,
+  };
+  if (product) {
+    safeProduct = {
+      name: product.name || 'N/A',
+      sku: product.sku || 'N/A',
+      category: product.category || 'N/A',
+      current_price: product.current_price ?? 0,
+      unit_cost: product.unit_cost ?? 0,
+      margin: product.margin ?? 0,
+      ...product
+    };
+  }
+
+  // Defensive: fallback values for salesSummary
+  const safeSalesSummary = salesSummary || { total_quantity: 0, total_transactions: 0, total_revenue: 0, total_profit: 0 };
+
+  // Defensive: fallback values for elasticity
+  const safeElasticity = elasticity || {
+    elasticity_coefficient: 0,
+    elasticity_type: 'N/A',
+    optimal_price: 0,
+    expected_revenue_change: 0,
+    recommended_action: '',
+  };
+
+  // Defensive: fallback for curveData
+  let chartData = [];
+  try {
+    if (
+      curveData &&
+      Array.isArray(curveData.prices) &&
+      Array.isArray(curveData.quantities) &&
+      Array.isArray(curveData.revenues) &&
+      Array.isArray(curveData.profits)
+    ) {
+      chartData = curveData.prices.map((price, i) => ({
+        price: price?.toFixed(2) ?? '',
+        quantity: curveData.quantities[i]?.toFixed(0) ?? '',
+        revenue: curveData.revenues[i]?.toFixed(0) ?? '',
+        profit: curveData.profits[i]?.toFixed(0) ?? ''
+      }));
+    }
+  } catch (err) {
+    console.error('Error preparing chart data:', err);
+    chartData = [];
+  }
+
+  // Defensive: fallback for simulationResult
+  const safeSimulationResult = simulationResult || {
+    revenue: { revenue_change_percent: 0, total_revenue_change: 0 },
+    profit: { profit_change_percent: 0, total_profit_change: 0 },
+    recommendation: { action: 'N/A', risk_level: 'N/A' },
+  };
 
   return (
     <div className="space-y-6">
@@ -119,8 +202,8 @@ function ProductDetail() {
           <ArrowLeft className="h-4 w-4" />
         </Link>
         <div>
-          <h1 className="text-3xl font-bold text-gray-900">{product.name}</h1>
-          <p className="text-gray-600 mt-1">{product.sku} • {product.category}</p>
+          <h1 className="text-3xl font-bold text-gray-900">{safeProduct.name}</h1>
+          <p className="text-gray-600 mt-1">{safeProduct.sku} • {safeProduct.category}</p>
         </div>
       </div>
 
@@ -129,40 +212,37 @@ function ProductDetail() {
         <div className="card">
           <p className="text-sm text-gray-600">Current Price</p>
           <p className="text-2xl font-bold text-primary-600 mt-2">
-            ${product.current_price}
+            ${safeProduct.current_price}
           </p>
           <p className="text-sm text-gray-500 mt-1">
-            Cost: ${product.unit_cost}
+            Cost: ${safeProduct.unit_cost}
           </p>
         </div>
-        
         <div className="card">
           <p className="text-sm text-gray-600">Margin</p>
           <p className="text-2xl font-bold text-green-600 mt-2">
-            {product.margin}%
+            {safeProduct.margin}%
           </p>
           <p className="text-sm text-gray-500 mt-1">
-            ${(product.current_price - product.unit_cost).toFixed(2)} profit
+            ${(safeProduct.current_price - safeProduct.unit_cost).toFixed(2)} profit
           </p>
         </div>
-
         <div className="card">
           <p className="text-sm text-gray-600">Total Sales (90d)</p>
           <p className="text-2xl font-bold text-gray-900 mt-2">
-            {salesSummary?.total_quantity?.toLocaleString() || 0}
+            {safeSalesSummary.total_quantity?.toLocaleString() || 0}
           </p>
           <p className="text-sm text-gray-500 mt-1">
-            {salesSummary?.total_transactions || 0} transactions
+            {safeSalesSummary.total_transactions || 0} transactions
           </p>
         </div>
-
         <div className="card">
           <p className="text-sm text-gray-600">Revenue (90d)</p>
           <p className="text-2xl font-bold text-gray-900 mt-2">
-            ${salesSummary?.total_revenue?.toLocaleString(undefined, { maximumFractionDigits: 0 }) || 0}
+            ${safeSalesSummary.total_revenue?.toLocaleString(undefined, { maximumFractionDigits: 0 }) || 0}
           </p>
           <p className="text-sm text-gray-500 mt-1">
-            ${salesSummary?.total_profit?.toLocaleString(undefined, { maximumFractionDigits: 0 }) || 0} profit
+            ${safeSalesSummary.total_profit?.toLocaleString(undefined, { maximumFractionDigits: 0 }) || 0} profit
           </p>
         </div>
       </div>
@@ -205,7 +285,7 @@ function ProductDetail() {
                   ${elasticity.optimal_price}
                 </p>
                 <p className="text-sm text-gray-500 mt-1">
-                  {((elasticity.optimal_price - product.current_price) / product.current_price * 100).toFixed(1)}% change
+                  {((elasticity.optimal_price - safeProduct.current_price) / safeProduct.current_price * 100).toFixed(1)}% change
                 </p>
               </div>
 
@@ -242,7 +322,8 @@ function ProductDetail() {
                     <Tooltip />
                     <Legend />
                     <ReferenceLine
-                      x={product.current_price.toFixed(2)}
+                      yAxisId="left"
+                      x={safeProduct.current_price.toFixed(2)}
                       stroke="red"
                       label="Current"
                       strokeDasharray="3 3"
@@ -289,7 +370,7 @@ function ProductDetail() {
               type="number"
               value={simulationPrice}
               onChange={(e) => setSimulationPrice(e.target.value)}
-              placeholder={`Current: $${product.current_price}`}
+              placeholder={`Current: $${safeProduct.current_price}`}
               step="0.01"
               min="0"
               className="input w-full"
