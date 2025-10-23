@@ -1,0 +1,51 @@
+sku,name,category,subcategory,brand,unit_cost,current_price,currency
+SKU0001,BrandA Fitness 1,Sports & Outdoors,Fitness,BrandA,181.85,303.08,USD
+SKU0002,BrandB Smartwatches 2,Electronics,Smartwatches,BrandB,780.95,1201.46,USD
+SKU0003,BrandA Shoes 3,Clothing,Shoes,BrandA,60.51,121.02,USD
+SKU0004,Elite Snacks 4,Groceries,Snacks,Elite,22.71,30.28,USD
+SKU0005,Premium Jackets 5,Clothing,Jackets,Premium,35.01,70.02,USD
+SKU0006,Value Smartphones 6,Electronics,Smartphones,Value,155.09,238.6,USD
+SKU0007,BrandB Tablets 7,Electronics,Tablets,BrandB,1265.92,1947.58,USD
+SKU0008,Premium Outdoor Clothing 8,Sports & Outdoors,Outdoor Clothing,Premium,144.9,241.51,USD
+SKU0009,BrandB Dresses 9,Clothing,Dresses,BrandB,86.98,173.96,USD
+SKU0010,BrandC Beverages 10,Groceries,Beverages,BrandC,14.83,19.77,USD
+SKU0011,BrandC Fitness 11,Sports & Outdoors,Fitness,BrandC,135.18,225.3,USD
+SKU0012,BrandD Bedding 12,Home & Kitchen,Bedding,BrandD,193.47,351.77,USD
+SKU0013,Premium Shirts 13,Clothing,Shirts,Premium,46.1,92.21,USD
+SKU0014,BrandD Haircare 14,Beauty & Personal Care,Haircare,BrandD,45.79,101.76,USD
+SKU0015,BrandE Snacks 15,Groceries,Snacks,BrandE,6.53,8.7,USD
+SKU0016,Value Outdoor Clothing 16,Sports & Outdoors,Outdoor Clothing,Value,217.01,361.68,USD
+SKU0017,Elite Shoes 17,Clothing,Shoes,Elite,18.18,36.36,USD
+SKU0018,Value Camping 18,Sports & Outdoors,Camping,Value,149.19,248.65,USD
+SKU0019,BrandE Bakery 19,Groceries,Bakery,BrandE,36.46,48.61,USD
+SKU0020,BrandE Fitness 20,Sports & Outdoors,Fitness,BrandE,187.93,313.22,USD
+SKU0021,BrandA Jackets 21,Clothing,Jackets,BrandA,95.84,191.69,USD
+SKU0022,BrandB Makeup 22,Beauty & Personal Care,Makeup,BrandB,59.34,131.87,USD
+SKU0023,BrandC Makeup 23,Beauty & Personal Care,Makeup,BrandC,28.06,62.35,USD
+SKU0024,Premium Skincare 24,Beauty & Personal Care,Skincare,Premium,35.28,78.4,USD
+SKU0025,BrandA Furniture 25,Home & Kitchen,Furniture,BrandA,78.77,143.21,USD
+SKU0026,BrandB Sports Equipment 26,Sports & Outdoors,Sports Equipment,BrandB,235.05,391.74,USD
+SKU0027,BrandC Sports Equipment 27,Sports & Outdoors,Sports Equipment,BrandC,74.64,124.4,USD
+SKU0028,BrandD Shoes 28,Clothing,Shoes,BrandD,74.17,148.33,USD
+SKU0029,Elite Appliances 29,Home & Kitchen,Appliances,Elite,47.78,86.87,USD
+SKU0030,BrandD Bath 30,Beauty & Personal Care,Bath,BrandD,41.57,92.38,USD
+SKU0031,BrandB Laptops 31,Electronics,Laptops,BrandB,1180.12,1815.57,USD
+SKU0032,Elite Dresses 32,Clothing,Dresses,Elite,29.28,58.56,USD
+SKU0033,Elite Bath 33,Beauty & Personal Care,Bath,Elite,19.81,44.02,USD
+SKU0034,Value Smartphones 34,Electronics,Smartphones,Value,481.57,740.88,USD
+SKU0035,BrandA Smartphones 35,Electronics,Smartphones,BrandA,542.82,835.11,USD
+SKU0036,BrandD Pants 36,Clothing,Pants,BrandD,58.27,116.53,USD
+SKU0037,BrandB Snacks 37,Groceries,Snacks,BrandB,17.45,23.27,USD
+SKU0038,BrandA Smartwatches 38,Electronics,Smartwatches,BrandA,1260.7,1939.54,USD
+SKU0039,Elite Jackets 39,Clothing,Jackets,Elite,53.32,106.64,USD
+SKU0040,BrandA Jackets 40,Clothing,Jackets,BrandA,98.68,197.36,USD
+SKU0041,Value Beverages 41,Groceries,Beverages,Value,26.58,35.44,USD
+SKU0042,BrandC Sports Equipment 42,Sports & Outdoors,Sports Equipment,BrandC,57.73,96.21,USD
+SKU0043,BrandA Outdoor Clothing 43,Sports & Outdoors,Outdoor Clothing,BrandA,183.29,305.49,USD
+SKU0044,BrandC Bath 44,Beauty & Personal Care,Bath,BrandC,8.08,17.96,USD
+SKU0045,BrandB Smartwatches 45,Electronics,Smartwatches,BrandB,888.33,1366.66,USD
+SKU0046,BrandA Makeup 46,Beauty & Personal Care,Makeup,BrandA,43.52,96.71,USD
+SKU0047,BrandE Haircare 47,Beauty & Personal Care,Haircare,BrandE,17.37,38.6,USD
+SKU0048,BrandE Snacks 48,Groceries,Snacks,BrandE,17.96,23.95,USD
+SKU0049,BrandB Tablets 49,Electronics,Tablets,BrandB,125.36,192.86,USD
+SKU0050,BrandD Cookware 50,Home & Kitchen,Cookware,BrandD,112.02,203.68,USD
