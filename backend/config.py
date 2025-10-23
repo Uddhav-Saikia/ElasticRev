@@ -5,8 +5,21 @@ from pathlib import Path
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 # Database configuration
-DATABASE_PATH = os.path.join(BASE_DIR, 'database', 'elasticrev.db')
-SQLALCHEMY_DATABASE_URI = f'sqlite:///{DATABASE_PATH}'
+# Use PostgreSQL for production, SQLite for development
+DATABASE_URL = os.environ.get('DATABASE_URL')
+
+if DATABASE_URL:
+    # Production: Use PostgreSQL (Render, Vercel, etc.)
+    # Fix for SQLAlchemy 1.4+ postgres:// -> postgresql://
+    if DATABASE_URL.startswith('postgres://'):
+        DATABASE_URL = DATABASE_URL.replace('postgres://', 'postgresql://', 1)
+    SQLALCHEMY_DATABASE_URI = DATABASE_URL
+else:
+    # Development: Use SQLite
+    DATABASE_PATH = os.path.join(BASE_DIR, 'database', 'elasticrev.db')
+    SQLALCHEMY_DATABASE_URI = f'sqlite:///{DATABASE_PATH}'
+    os.makedirs(os.path.dirname(DATABASE_PATH), exist_ok=True)
+
 SQLALCHEMY_TRACK_MODIFICATIONS = False
 
 # Data directories
