@@ -202,7 +202,7 @@ function ProductDetail() {
           <ArrowLeft className="h-4 w-4" />
         </Link>
         <div>
-          <h1 className="text-3xl font-bold text-gray-900">{safeProduct.name}</h1>
+          <h1 className="text-3xl font-bold text-gray-100">{safeProduct.name}</h1>
           <p className="text-gray-600 mt-1">{safeProduct.sku} • {safeProduct.category}</p>
         </div>
       </div>
@@ -229,7 +229,7 @@ function ProductDetail() {
         </div>
         <div className="card">
           <p className="text-sm text-gray-600">Total Sales (90d)</p>
-          <p className="text-2xl font-bold text-gray-900 mt-2">
+          <p className="text-2xl font-bold text-gray-100 mt-2">
             {safeSalesSummary.total_quantity?.toLocaleString() || 0}
           </p>
           <p className="text-sm text-gray-500 mt-1">
@@ -238,7 +238,7 @@ function ProductDetail() {
         </div>
         <div className="card">
           <p className="text-sm text-gray-600">Revenue (90d)</p>
-          <p className="text-2xl font-bold text-gray-900 mt-2">
+          <p className="text-2xl font-bold text-gray-100 mt-2">
             ${safeSalesSummary.total_revenue?.toLocaleString(undefined, { maximumFractionDigits: 0 }) || 0}
           </p>
           <p className="text-sm text-gray-500 mt-1">
@@ -251,7 +251,7 @@ function ProductDetail() {
       <div className="card">
         <div className="flex justify-between items-start mb-6">
           <div>
-            <h2 className="text-xl font-semibold text-gray-900">Price Elasticity Analysis</h2>
+            <h2 className="text-xl font-semibold text-gray-100">Price Elasticity Analysis</h2>
             <p className="text-gray-600 mt-1">Understand how price changes affect demand</p>
           </div>
           <button
@@ -302,7 +302,7 @@ function ProductDetail() {
             {/* Elasticity Curve */}
             {chartData.length > 0 && (
               <div>
-                <h3 className="text-lg font-semibold text-gray-900 mb-4">Demand Elasticity Curve</h3>
+                <h3 className="text-lg font-semibold text-gray-100 mb-4">Demand Elasticity Curve</h3>
                 <ResponsiveContainer width="100%" height={350}>
                   <LineChart data={chartData}>
                     <CartesianGrid strokeDasharray="3 3" />
@@ -360,7 +360,7 @@ function ProductDetail() {
 
       {/* What-If Simulator */}
       <div className="card">
-        <h2 className="text-xl font-semibold text-gray-900 mb-4">What-If Scenario Simulator</h2>
+  <h2 className="text-xl font-semibold text-gray-100 mb-4">What-If Scenario Simulator</h2>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
           <div className="md:col-span-2">
             <label className="block text-sm font-medium text-gray-700 mb-2">
@@ -411,7 +411,7 @@ function ProductDetail() {
             </div>
             <div>
               <p className="text-sm text-gray-600">Recommendation</p>
-              <p className="text-xl font-bold mt-1 text-gray-900">
+              <p className="text-xl font-bold mt-1 text-gray-100">
                 {simulationResult.recommendation.action}
               </p>
               <p className="text-sm text-gray-500">

@@ -27,7 +27,7 @@ function Products() {
     <div className="space-y-6">
       {/* Header */}
       <div>
-        <h1 className="text-3xl font-bold text-gray-900">Products</h1>
+  <h1 className="text-3xl font-bold text-gray-100">Products</h1>
         <p className="text-gray-600 mt-1">Manage and analyze product pricing</p>
       </div>
 
@@ -96,7 +96,7 @@ function Products() {
               >
                 <div className="flex justify-between items-start mb-3">
                   <div>
-                    <h3 className="font-semibold text-gray-900 group-hover:text-primary-600 transition-colors">
+                    <h3 className="font-semibold text-gray-100 group-hover:text-primary-600 transition-colors">
                       {product.name}
                     </h3>
                     <p className="text-sm text-gray-500">{product.sku}</p>
