@@ -25,30 +25,37 @@ import {
   ResponsiveContainer
 } from 'recharts';
 
-const COLORS = ['#0ea5e9', '#8b5cf6', '#ec4899', '#f59e0b', '#10b981', '#ef4444'];
+const COLORS = ['#a855f7', '#c026d3', '#e879f9', '#f0abfc', '#d946ef', '#9333ea'];
 
 function StatCard({ title, value, icon: Icon, trend, color = 'primary' }) {
   const colorClasses = {
-    primary: 'bg-primary-500',
-    green: 'bg-green-500',
-    blue: 'bg-blue-500',
-    purple: 'bg-purple-500',
+    primary: 'from-primary-600 to-primary-700',
+    green: 'from-emerald-600 to-emerald-700',
+    blue: 'from-blue-600 to-blue-700',
+    purple: 'from-purple-600 to-purple-700',
   };
 
   return (
-    <div className="card">
-      <div className="flex items-center justify-between">
-        <div>
-          <p className="text-sm font-medium text-gray-600">{title}</p>
-          <p className="text-2xl font-bold text-gray-900 mt-2">{value}</p>
+    <div className="stat-card group">
+      <div className="flex items-center justify-between relative z-10">
+        <div className="flex-1">
+          <p className="text-sm font-semibold text-primary-300 uppercase tracking-wide">{title}</p>
+          <p className="text-3xl font-bold text-white mt-2 bg-gradient-to-r from-white to-gray-100 bg-clip-text text-transparent">
+            {value}
+          </p>
           {trend && (
-            <p className="text-sm text-gray-500 mt-1">{trend}</p>
+            <p className="text-sm text-gray-400 mt-2 flex items-center gap-1">
+              <TrendingUp className="h-3 w-3" />
+              {trend}
+            </p>
           )}
         </div>
-        <div className={`${colorClasses[color]} p-3 rounded-lg`}>
-          <Icon className="h-6 w-6 text-white" />
+        <div className={`bg-gradient-to-br ${colorClasses[color]} p-4 rounded-xl shadow-lg group-hover:scale-110 transition-transform duration-300`}>
+          <Icon className="h-7 w-7 text-white" />
         </div>
       </div>
+      {/* Decorative elements */}
+      <div className="absolute top-0 right-0 w-32 h-32 bg-gradient-to-br from-primary-500/10 to-transparent rounded-full blur-2xl -z-10"></div>
     </div>
   );
 }
@@ -83,7 +90,10 @@ function Dashboard() {
   if (isLoading) {
     return (
       <div className="flex items-center justify-center h-64">
-        <RefreshCw className="h-8 w-8 animate-spin text-primary-600" />
+        <div className="relative">
+          <RefreshCw className="h-12 w-12 animate-spin text-primary-500" />
+          <div className="absolute inset-0 blur-xl bg-primary-500/30 animate-pulse"></div>
+        </div>
       </div>
     );
   }
@@ -91,12 +101,14 @@ function Dashboard() {
   const { overall, by_category, elasticity_distribution, top_products } = analytics || {};
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-8">
       {/* Header */}
-      <div className="flex justify-between items-center">
+      <div className="flex flex-col md:flex-row md:justify-between md:items-center gap-4">
         <div>
-          <h1 className="text-3xl font-bold text-gray-900">Dashboard</h1>
-          <p className="text-gray-600 mt-1">Dynamic Pricing Analytics Overview</p>
+          <h1 className="text-4xl font-bold bg-gradient-to-r from-primary-400 via-accent-400 to-primary-400 bg-clip-text text-transparent">
+            Dashboard
+          </h1>
+          <p className="text-gray-400 mt-2 text-lg">Dynamic Pricing Analytics Overview</p>
         </div>
         <div className="flex gap-3">
           <select
@@ -152,26 +164,57 @@ function Dashboard() {
       </div>
 
       {/* Charts Row 1 */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
         {/* Category Performance */}
         <div className="card">
-          <h2 className="text-lg font-semibold text-gray-900 mb-4">Revenue by Category</h2>
+          <h2 className="text-xl font-bold text-white mb-6 flex items-center gap-2">
+            <BarChart className="h-5 w-5 text-primary-400" />
+            Revenue by Category
+          </h2>
           <ResponsiveContainer width="100%" height={300}>
             <BarChart data={by_category || []}>
-              <CartesianGrid strokeDasharray="3 3" />
-              <XAxis dataKey="category" angle={-45} textAnchor="end" height={100} />
-              <YAxis />
-              <Tooltip formatter={(value) => `$${value.toLocaleString()}`} />
-              <Legend />
-              <Bar dataKey="revenue" fill="#0ea5e9" name="Revenue" />
-              <Bar dataKey="profit" fill="#10b981" name="Profit" />
+              <CartesianGrid strokeDasharray="3 3" stroke="#334155" opacity={0.3} />
+              <XAxis 
+                dataKey="category" 
+                angle={-45} 
+                textAnchor="end" 
+                height={100} 
+                stroke="#94a3b8"
+                style={{ fontSize: '12px' }}
+              />
+              <YAxis stroke="#94a3b8" style={{ fontSize: '12px' }} />
+              <Tooltip 
+                formatter={(value) => `$${value.toLocaleString()}`}
+                contentStyle={{ 
+                  backgroundColor: '#1e293b', 
+                  border: '1px solid #475569',
+                  borderRadius: '12px',
+                  color: '#f1f5f9'
+                }}
+              />
+              <Legend wrapperStyle={{ color: '#94a3b8' }} />
+              <Bar dataKey="revenue" fill="url(#colorRevenue)" name="Revenue" radius={[8, 8, 0, 0]} />
+              <Bar dataKey="profit" fill="url(#colorProfit)" name="Profit" radius={[8, 8, 0, 0]} />
+              <defs>
+                <linearGradient id="colorRevenue" x1="0" y1="0" x2="0" y2="1">
+                  <stop offset="0%" stopColor="#a855f7" stopOpacity={0.9}/>
+                  <stop offset="100%" stopColor="#a855f7" stopOpacity={0.6}/>
+                </linearGradient>
+                <linearGradient id="colorProfit" x1="0" y1="0" x2="0" y2="1">
+                  <stop offset="0%" stopColor="#10b981" stopOpacity={0.9}/>
+                  <stop offset="100%" stopColor="#10b981" stopOpacity={0.6}/>
+                </linearGradient>
+              </defs>
             </BarChart>
           </ResponsiveContainer>
         </div>
 
         {/* Elasticity Distribution */}
         <div className="card">
-          <h2 className="text-lg font-semibold text-gray-900 mb-4">Elasticity Distribution</h2>
+          <h2 className="text-xl font-bold text-white mb-6 flex items-center gap-2">
+            <TrendingUp className="h-5 w-5 text-primary-400" />
+            Elasticity Distribution
+          </h2>
           <ResponsiveContainer width="100%" height={300}>
             <PieChart>
               <Pie
@@ -180,15 +223,24 @@ function Dashboard() {
                 nameKey="type"
                 cx="50%"
                 cy="50%"
+                innerRadius={60}
                 outerRadius={100}
+                paddingAngle={5}
                 label={({ type, count }) => `${type}: ${count}`}
               >
                 {(elasticity_distribution || []).map((entry, index) => (
                   <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
                 ))}
               </Pie>
-              <Tooltip />
-              <Legend />
+              <Tooltip 
+                contentStyle={{ 
+                  backgroundColor: '#1e293b', 
+                  border: '1px solid #475569',
+                  borderRadius: '12px',
+                  color: '#f1f5f9'
+                }}
+              />
+              <Legend wrapperStyle={{ color: '#94a3b8' }} />
             </PieChart>
           </ResponsiveContainer>
         </div>
@@ -196,7 +248,10 @@ function Dashboard() {
 
       {/* Top Products */}
       <div className="card">
-        <h2 className="text-lg font-semibold text-gray-900 mb-4">Top 10 Products by Revenue</h2>
+        <h2 className="text-xl font-bold text-white mb-6 flex items-center gap-2">
+          <Package className="h-5 w-5 text-primary-400" />
+          Top 10 Products by Revenue
+        </h2>
         <div className="overflow-x-auto">
           <table className="table">
             <thead>
