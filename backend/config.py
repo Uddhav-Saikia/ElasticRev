@@ -84,7 +84,7 @@ EXCEL_TEMPLATES = {
 }
 
 # CORS Configuration
-CORS_ORIGINS = ['http://localhost:3000', 'http://localhost:3001']
+CORS_ORIGINS = ['http://localhost:3000', 'http://localhost:3001', 'https://elasticrev-2.onrender.com']
 
 # Logging
 LOG_LEVEL = os.environ.get('LOG_LEVEL', 'INFO')
