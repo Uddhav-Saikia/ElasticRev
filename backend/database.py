@@ -26,6 +26,8 @@ def init_database(app=None):
     
     with app.app_context():
         # Drop all tables and recreate (for development)
+        print("🗄️  Resetting database...")
+        db.drop_all()
         print("🗄️  Creating database schema...")
         db.create_all()
         print("✓ Database tables created")

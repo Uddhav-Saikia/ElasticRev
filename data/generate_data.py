@@ -13,8 +13,9 @@ np.random.seed(42)
 random.seed(42)
 
 # Configuration
-START_DATE = datetime(2023, 1, 1)
-END_DATE = datetime(2024, 12, 31)
+# Generate data for the last 2 years up to today
+END_DATE = datetime.now()
+START_DATE = END_DATE - timedelta(days=730)  # 2 years of data
 NUM_PRODUCTS = 50
 
 # Product categories and their characteristics
