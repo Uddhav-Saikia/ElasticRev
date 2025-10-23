@@ -604,27 +604,88 @@ def get_dashboard_analytics():
 
 # ==================== Excel Export API ====================
 
+def get_dashboard_analytics_data(days=30):
+    """Helper function to get dashboard analytics data for export"""
+    date_threshold = datetime.now().date() - timedelta(days=days)
+    
+    # Overall metrics
+    overall = db.session.query(
+        func.sum(Sale.revenue).label('total_revenue'),
+        func.sum(Sale.profit).label('total_profit'),
+        func.count(func.distinct(Sale.product_id)).label('products_sold')
+    ).filter(Sale.date >= date_threshold).first()
+    
+    # Total products and products with elasticity
+    total_products = Product.query.count()
+    products_with_elasticity = ElasticityResult.query.distinct(ElasticityResult.product_id).count()
+    
+    return {
+        'total_revenue': float(overall.total_revenue or 0),
+        'total_profit': float(overall.total_profit or 0),
+        'products_sold': overall.products_sold or 0,
+        'total_products': total_products,
+        'products_with_elasticity': products_with_elasticity
+    }
+
 @app.route('/api/export/excel', methods=['GET'])
 def export_to_excel():
-    """Export pricing strategy report to Excel"""
+    """Export comprehensive pricing strategy report to Excel"""
     try:
         product_id = request.args.get('product_id', type=int)
-        
+        days = int(request.args.get('days', 30))
+
         # Create workbook
         wb = Workbook()
         wb.remove(wb.active)
-        
-        # Summary Sheet
-        ws_summary = wb.create_sheet('Summary')
-        ws_summary.merge_cells('A1:F1')
+
+        # ===== SUMMARY SHEET =====
+        ws_summary = wb.create_sheet('Executive Summary')
+        ws_summary.merge_cells('A1:H1')
         ws_summary['A1'] = 'ElasticRev - Pricing Strategy Report'
-        ws_summary['A1'].font = Font(size=16, bold=True)
-        ws_summary['A1'].alignment = Alignment(horizontal='center')
-        
+        ws_summary['A1'].font = Font(size=18, bold=True, color='FFFFFF')
+        ws_summary['A1'].fill = PatternFill(start_color='2E5090', end_color='2E5090', fill_type='solid')
+        ws_summary['A1'].alignment = Alignment(horizontal='center', vertical='center')
+        ws_summary.row_dimensions[1].height = 30
+
         ws_summary['A3'] = 'Report Generated:'
-        ws_summary['B3'] = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+    ws_summary['B3'] = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+    ws_summary['A4'] = 'Analysis Period:'
+    ws_summary['B4'] = f'Last {days} days'
+
+    # Get dashboard analytics
+    analytics = get_dashboard_analytics_data(days)
+
+    ws_summary['A6'] = 'Key Metrics'
+    ws_summary['A6'].font = Font(size=14, bold=True)
+    ws_summary['A7'] = 'Total Products:'
+    ws_summary['B7'] = analytics.get('total_products', 0)
+    ws_summary['A8'] = 'Total Revenue:'
+    ws_summary['B8'] = f"${analytics.get('total_revenue', 0):,.2f}"
+    ws_summary['A9'] = 'Products Analyzed:'
+    ws_summary['B9'] = analytics.get('products_with_elasticity', 0)
+    ws_summary['A10'] = 'Active Scenarios:'
+    ws_summary['B10'] = Scenario.query.count()
+
+    # Add large stylized message in columns J to M
+    ws_summary.merge_cells('J2:M6')
+    cell = ws_summary['J2']
+    cell.value = '👉 Explore the other tabs below for detailed analysis, recommendations, and scenario results!'
+    cell.font = Font(size=24, bold=True, color='2E5090', name='Calibri')
+    cell.alignment = Alignment(horizontal='center', vertical='center', wrap_text=True)
+    cell.fill = PatternFill(start_color='F3F6FB', end_color='F3F6FB', fill_type='solid')
+    ws_summary.row_dimensions[2].height = 80
         
-        # Products with elasticity
+        # ===== ELASTICITY ANALYSIS SHEET =====
+        ws_elasticity = wb.create_sheet('Elasticity Analysis')
+        headers = ['Product', 'Category', 'Current Price', 'Elasticity Coefficient', 'Type', 
+                  'Optimal Price', 'Expected Revenue Change %', 'Recommendation', 'Confidence']
+        
+        for col, header in enumerate(headers, 1):
+            cell = ws_elasticity.cell(1, col, header)
+            cell.font = Font(bold=True, color='FFFFFF')
+            cell.fill = PatternFill(start_color='4472C4', end_color='4472C4', fill_type='solid')
+            cell.alignment = Alignment(horizontal='center')
+        
         query = db.session.query(Product, ElasticityResult).join(
             ElasticityResult, Product.id == ElasticityResult.product_id
         ).order_by(Product.category, Product.name)
@@ -634,46 +695,130 @@ def export_to_excel():
         
         results = query.all()
         
-        # Elasticity Sheet
-        ws_elasticity = wb.create_sheet('Elasticity Analysis')
-        headers = ['Product', 'Category', 'Current Price', 'Elasticity', 'Type', 
-                  'Optimal Price', 'Expected Revenue Change %', 'Recommendation']
-        
-        for col, header in enumerate(headers, 1):
-            cell = ws_elasticity.cell(1, col, header)
-            cell.font = Font(bold=True)
-            cell.fill = PatternFill(start_color='4472C4', end_color='4472C4', fill_type='solid')
-            cell.font = Font(color='FFFFFF', bold=True)
-        
         for row, (product, elasticity) in enumerate(results, 2):
             ws_elasticity.cell(row, 1, product.name)
             ws_elasticity.cell(row, 2, product.category)
-            ws_elasticity.cell(row, 3, product.current_price)
+            ws_elasticity.cell(row, 3, f"${product.current_price:.2f}")
             ws_elasticity.cell(row, 4, round(elasticity.elasticity_coefficient, 3))
             ws_elasticity.cell(row, 5, elasticity.elasticity_type)
-            ws_elasticity.cell(row, 6, elasticity.optimal_price or 0)
-            ws_elasticity.cell(row, 7, round(elasticity.expected_revenue_change or 0, 2))
-            ws_elasticity.cell(row, 8, elasticity.recommended_action or '')
+            ws_elasticity.cell(row, 6, f"${elasticity.optimal_price:.2f}" if elasticity.optimal_price else 'N/A')
+            ws_elasticity.cell(row, 7, f"{elasticity.expected_revenue_change:.2f}%" if elasticity.expected_revenue_change else 'N/A')
+            ws_elasticity.cell(row, 8, elasticity.recommended_action or 'N/A')
+            ws_elasticity.cell(row, 9, f"{elasticity.r_squared:.2f}" if elasticity.r_squared else 'N/A')
         
-        # Auto-size columns
-        for column in ws_elasticity.columns:
-            max_length = 0
-            column = [cell for cell in column]
-            for cell in column:
-                try:
-                    if len(str(cell.value)) > max_length:
-                        max_length = len(cell.value)
-                except:
-                    pass
-            adjusted_width = (max_length + 2)
-            ws_elasticity.column_dimensions[column[0].column_letter].width = adjusted_width
+        # ===== SCENARIOS SHEET =====
+        ws_scenarios = wb.create_sheet('Scenarios')
+        scenario_headers = ['Scenario Name', 'Product', 'Current Price', 'New Price', 
+                           'Price Change %', 'Revenue Change %', 'Profit Change %', 
+                           'Demand Change %', 'Recommendation', 'Created']
+        
+        for col, header in enumerate(scenario_headers, 1):
+            cell = ws_scenarios.cell(1, col, header)
+            cell.font = Font(bold=True, color='FFFFFF')
+            cell.fill = PatternFill(start_color='70AD47', end_color='70AD47', fill_type='solid')
+            cell.alignment = Alignment(horizontal='center')
+        
+        scenarios = Scenario.query.order_by(Scenario.created_at.desc()).limit(50).all()
+        
+        for row, scenario in enumerate(scenarios, 2):
+            scenario_dict = scenario.to_dict()
+            ws_scenarios.cell(row, 1, scenario.name)
+            ws_scenarios.cell(row, 2, scenario_dict['product_name'])
+            ws_scenarios.cell(row, 3, f"${scenario.current_price:.2f}")
+            ws_scenarios.cell(row, 4, f"${scenario.new_price:.2f}")
+            ws_scenarios.cell(row, 5, f"{scenario.price_change_percent:.2f}%")
+            ws_scenarios.cell(row, 6, f"{scenario.revenue_change_percent:.2f}%" if scenario.revenue_change_percent else 'N/A')
+            ws_scenarios.cell(row, 7, f"{scenario.profit_change_percent:.2f}%" if scenario.profit_change_percent else 'N/A')
+            ws_scenarios.cell(row, 8, f"{scenario.demand_change_percent:.2f}%" if scenario.demand_change_percent else 'N/A')
+            rec = scenario_dict.get('recommendation', {})
+            ws_scenarios.cell(row, 9, rec.get('action', 'N/A') if rec else 'N/A')
+            ws_scenarios.cell(row, 10, scenario.created_at.strftime('%Y-%m-%d') if scenario.created_at else 'N/A')
+        
+        # ===== RECOMMENDATIONS SHEET =====
+        ws_recommendations = wb.create_sheet('Recommendations')
+        rec_headers = ['Product', 'Category', 'Current Price', 'Optimal Price', 
+                      'Expected Impact', 'Elasticity Type', 'Action']
+        
+        for col, header in enumerate(rec_headers, 1):
+            cell = ws_recommendations.cell(1, col, header)
+            cell.font = Font(bold=True, color='FFFFFF')
+            cell.fill = PatternFill(start_color='FFC000', end_color='FFC000', fill_type='solid')
+            cell.alignment = Alignment(horizontal='center')
+        
+        # Get recommendations from products with elasticity
+        recommendations_query = db.session.query(Product, ElasticityResult).join(
+            ElasticityResult, Product.id == ElasticityResult.product_id
+        ).filter(
+            ElasticityResult.expected_revenue_change.isnot(None)
+        ).order_by(ElasticityResult.expected_revenue_change.desc()).limit(50).all()
+        
+        for row, (product, elasticity) in enumerate(recommendations_query, 2):
+            ws_recommendations.cell(row, 1, product.name)
+            ws_recommendations.cell(row, 2, product.category)
+            ws_recommendations.cell(row, 3, f"${product.current_price:.2f}")
+            ws_recommendations.cell(row, 4, f"${elasticity.optimal_price:.2f}" if elasticity.optimal_price else 'N/A')
+            ws_recommendations.cell(row, 5, f"{elasticity.expected_revenue_change:.2f}%" if elasticity.expected_revenue_change else 'N/A')
+            ws_recommendations.cell(row, 6, elasticity.elasticity_type or 'N/A')
+            ws_recommendations.cell(row, 7, elasticity.recommended_action or 'N/A')
+        
+        # ===== SALES DATA SHEET =====
+        ws_sales = wb.create_sheet('Sales Performance')
+        sales_headers = ['Product', 'Category', 'Total Sales', 'Total Revenue', 
+                        'Avg Price', 'Avg Quantity', 'Last Sale Date']
+        
+        for col, header in enumerate(sales_headers, 1):
+            cell = ws_sales.cell(1, col, header)
+            cell.font = Font(bold=True, color='FFFFFF')
+            cell.fill = PatternFill(start_color='ED7D31', end_color='ED7D31', fill_type='solid')
+            cell.alignment = Alignment(horizontal='center')
+        
+        # Get sales summary
+        cutoff_date = datetime.now() - timedelta(days=days)
+        sales_query = db.session.query(
+            Product.name,
+            Product.category,
+            db.func.count(Sale.id).label('total_sales'),
+            db.func.sum(Sale.revenue).label('total_revenue'),
+            db.func.avg(Sale.price).label('avg_price'),
+            db.func.avg(Sale.quantity).label('avg_quantity'),
+            db.func.max(Sale.date).label('last_sale')
+        ).join(Sale, Product.id == Sale.product_id).filter(
+            Sale.date >= cutoff_date
+        ).group_by(Product.id, Product.name, Product.category).order_by(
+            db.func.sum(Sale.revenue).desc()
+        ).all()
+        
+        for row, sale_data in enumerate(sales_query, 2):
+            ws_sales.cell(row, 1, sale_data.name)
+            ws_sales.cell(row, 2, sale_data.category)
+            ws_sales.cell(row, 3, sale_data.total_sales)
+            ws_sales.cell(row, 4, f"${sale_data.total_revenue:,.2f}")
+            ws_sales.cell(row, 5, f"${sale_data.avg_price:.2f}")
+            ws_sales.cell(row, 6, f"{sale_data.avg_quantity:.1f}")
+            ws_sales.cell(row, 7, sale_data.last_sale.strftime('%Y-%m-%d') if sale_data.last_sale else 'N/A')
+        
+        # Auto-size all columns in all sheets
+        for ws in wb.worksheets:
+            for column in ws.columns:
+                max_length = 0
+                column = [cell for cell in column]
+                for cell in column:
+                    try:
+                        if cell.value and len(str(cell.value)) > max_length:
+                            max_length = len(str(cell.value))
+                    except:
+                        pass
+                adjusted_width = min((max_length + 2), 50)
+                # Skip merged cells
+                if hasattr(column[0], 'column_letter'):
+                    ws.column_dimensions[column[0].column_letter].width = adjusted_width
         
         # Save to bytes
         output = io.BytesIO()
         wb.save(output)
         output.seek(0)
         
-        filename = f'pricing_strategy_{datetime.now().strftime("%Y%m%d")}.xlsx'
+        filename = f'pricing_strategy_report_{datetime.now().strftime("%Y%m%d_%H%M%S")}.xlsx'
         
         return send_file(
             output,

@@ -62,13 +62,13 @@ function Scenarios() {
     <div className="space-y-6">
       {/* Header */}
       <div>
-        <h1 className="text-3xl font-bold text-gray-900">What-If Scenarios</h1>
+  <h1 className="text-3xl font-bold text-gray-100">What-If Scenarios</h1>
         <p className="text-gray-600 mt-1">Simulate and compare pricing strategies</p>
       </div>
 
       {/* Scenario Creator */}
       <div className="card">
-        <h2 className="text-lg font-semibold text-gray-900 mb-4">Create New Scenario</h2>
+  <h2 className="text-lg font-semibold text-gray-100 mb-4">Create New Scenario</h2>
         <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
           <div className="md:col-span-2">
             <label className="block text-sm font-medium text-gray-700 mb-2">
@@ -130,25 +130,25 @@ function Scenarios() {
       {/* Scenario Comparison */}
       {selectedScenarios.length >= 2 && comparison && (
         <div className="card bg-blue-50">
-          <h2 className="text-lg font-semibold text-gray-900 mb-4">Comparison Summary</h2>
+          <h2 className="text-lg font-semibold text-gray-100 mb-4">Comparison Summary</h2>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
             <div className="bg-white p-4 rounded-lg">
               <p className="text-sm text-gray-600 mb-2">Best for Revenue</p>
-              <p className="font-semibold text-gray-900">{comparison.best_for_revenue?.name}</p>
+              <p className="font-semibold text-gray-100">{comparison.best_for_revenue?.name}</p>
               <p className="text-lg font-bold text-green-600 mt-1">
                 +{comparison.best_for_revenue?.revenue?.revenue_change_percent.toFixed(1)}%
               </p>
             </div>
             <div className="bg-white p-4 rounded-lg">
               <p className="text-sm text-gray-600 mb-2">Best for Profit</p>
-              <p className="font-semibold text-gray-900">{comparison.best_for_profit?.name}</p>
+              <p className="font-semibold text-gray-100">{comparison.best_for_profit?.name}</p>
               <p className="text-lg font-bold text-green-600 mt-1">
                 +{comparison.best_for_profit?.profit?.profit_change_percent.toFixed(1)}%
               </p>
             </div>
             <div className="bg-white p-4 rounded-lg">
               <p className="text-sm text-gray-600 mb-2">Best for Volume</p>
-              <p className="font-semibold text-gray-900">{comparison.best_for_volume?.name}</p>
+              <p className="font-semibold text-gray-100">{comparison.best_for_volume?.name}</p>
               <p className="text-lg font-bold text-blue-600 mt-1">
                 +{comparison.best_for_volume?.demand?.quantity_change_percent.toFixed(1)}%
               </p>
@@ -160,7 +160,7 @@ function Scenarios() {
       {/* Scenarios List */}
       <div className="card">
         <div className="flex justify-between items-center mb-4">
-          <h2 className="text-lg font-semibold text-gray-900">Recent Scenarios</h2>
+    <h2 className="text-lg font-semibold text-gray-100">Recent Scenarios</h2>
           {selectedScenarios.length >= 2 && (
             <button
               className="btn btn-secondary flex items-center gap-2"
@@ -227,7 +227,7 @@ function Scenarios() {
                       {scenario.pricing.price_change_percent >= 0 ? '+' : ''}
                       {scenario.pricing.price_change_percent.toFixed(1)}%
                       <div className="text-xs text-gray-500 font-normal">
-                        ${scenario.pricing.current_price} → ${scenario.pricing.new_price}
+                        ${scenario.pricing.current_price.toFixed(2)} → ${scenario.pricing.new_price.toFixed(2)}
                       </div>
                     </td>
                     <td className={`text-right font-bold ${
@@ -236,7 +236,7 @@ function Scenarios() {
                       {scenario.revenue.revenue_change_percent >= 0 ? '+' : ''}
                       {scenario.revenue.revenue_change_percent.toFixed(1)}%
                       <div className="text-xs text-gray-500 font-normal">
-                        ${scenario.revenue.total_revenue_change.toLocaleString()}
+                        ${scenario.revenue.total_revenue_change.toLocaleString(undefined, { maximumFractionDigits: 0 })}
                       </div>
                     </td>
                     <td className={`text-right font-bold ${
@@ -245,7 +245,7 @@ function Scenarios() {
                       {scenario.profit.profit_change_percent >= 0 ? '+' : ''}
                       {scenario.profit.profit_change_percent.toFixed(1)}%
                       <div className="text-xs text-gray-500 font-normal">
-                        ${scenario.profit.total_profit_change.toLocaleString()}
+                        ${scenario.profit.total_profit_change.toLocaleString(undefined, { maximumFractionDigits: 0 })}
                       </div>
                     </td>
                     <td className={`text-right font-bold ${

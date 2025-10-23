@@ -44,7 +44,7 @@ function Recommendations() {
     <div className="space-y-6">
       {/* Header */}
       <div>
-        <h1 className="text-3xl font-bold text-gray-900">Pricing Recommendations</h1>
+  <h1 className="text-3xl font-bold text-gray-100">Pricing Recommendations</h1>
         <p className="text-gray-600 mt-1">AI-powered optimal pricing strategies</p>
       </div>
 
@@ -113,7 +113,7 @@ function Recommendations() {
           {/* High Impact Recommendations */}
           {highImpact.length > 0 && (
             <div className="card border-l-4 border-red-500">
-              <h2 className="text-lg font-semibold text-gray-900 mb-4 flex items-center gap-2">
+              <h2 className="text-lg font-semibold text-gray-100 mb-4 flex items-center gap-2">
                 <span className="bg-red-100 text-red-700 px-2 py-1 rounded text-sm">
                   High Priority
                 </span>
@@ -131,7 +131,7 @@ function Recommendations() {
                           {getActionIcon(rec.recommended_action)}
                         </div>
                         <div>
-                          <h3 className="font-semibold text-gray-900">{rec.product_name}</h3>
+                          <h3 className="font-semibold text-gray-100">{rec.product_name}</h3>
                           <p className="text-sm text-gray-600">{rec.category}</p>
                         </div>
                       </div>
@@ -139,7 +139,7 @@ function Recommendations() {
                     <div className="flex items-center gap-8">
                       <div className="text-right">
                         <p className="text-sm text-gray-600">Current Price</p>
-                        <p className="text-lg font-bold text-gray-900">${rec.current_price}</p>
+                        <p className="text-lg font-bold text-gray-100">${rec.current_price}</p>
                       </div>
                       <ArrowRight className="h-5 w-5 text-gray-400" />
                       <div className="text-right">
@@ -167,7 +167,7 @@ function Recommendations() {
 
           {/* All Recommendations Table */}
           <div className="card">
-            <h2 className="text-lg font-semibold text-gray-900 mb-4">All Recommendations</h2>
+            <h2 className="text-lg font-semibold text-gray-100 mb-4">All Recommendations</h2>
             <div className="overflow-x-auto">
               <table className="table">
                 <thead>

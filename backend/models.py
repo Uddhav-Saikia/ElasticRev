@@ -210,6 +210,9 @@ class Scenario(db.Model):
     product = db.relationship('Product')
     
     def to_dict(self):
+        # Calculate recommendation based on scenario results
+        recommendation = self._calculate_recommendation()
+        
         return {
             'id': self.id,
             'name': self.name,
@@ -224,21 +227,58 @@ class Scenario(db.Model):
             'demand': {
                 'current': self.current_demand,
                 'predicted': self.predicted_demand,
-                'change_percent': self.demand_change_percent
+                'change_percent': self.demand_change_percent,
+                'quantity_change_percent': self.demand_change_percent  # Frontend expects this name
             },
             'revenue': {
                 'current': self.current_revenue,
                 'predicted': self.predicted_revenue,
-                'change_percent': self.revenue_change_percent
+                'change_percent': self.revenue_change_percent,
+                'revenue_change_percent': self.revenue_change_percent,  # Frontend expects this name
+                'total_revenue_change': (self.predicted_revenue - self.current_revenue) if (self.predicted_revenue and self.current_revenue) else 0
             },
             'profit': {
                 'current': self.current_profit,
                 'predicted': self.predicted_profit,
-                'change_percent': self.profit_change_percent
+                'change_percent': self.profit_change_percent,
+                'profit_change_percent': self.profit_change_percent,  # Frontend expects this name
+                'total_profit_change': (self.predicted_profit - self.current_profit) if (self.predicted_profit and self.current_profit) else 0
             },
+            'recommendation': recommendation,
             'simulation_days': self.simulation_days,
             'elasticity_used': self.elasticity_used,
             'created_at': self.created_at.isoformat() if self.created_at else None
+        }
+    
+    def _calculate_recommendation(self):
+        """Calculate recommendation based on scenario results"""
+        if not all([self.profit_change_percent, self.revenue_change_percent, self.demand_change_percent]):
+            return None
+        
+        # Determine recommendation action based on profit and revenue impact
+        profit_positive = self.profit_change_percent > 0
+        revenue_positive = self.revenue_change_percent > 0
+        
+        # Calculate a composite score
+        score = (self.profit_change_percent * 0.5) + (self.revenue_change_percent * 0.3) + (self.demand_change_percent * 0.2)
+        
+        if score > 5 and profit_positive and revenue_positive:
+            action = 'Highly Recommended'
+            reason = f'Excellent profit (+{self.profit_change_percent:.1f}%) and revenue (+{self.revenue_change_percent:.1f}%) gains'
+        elif score > 2 and profit_positive:
+            action = 'Recommended'
+            reason = f'Positive profit impact (+{self.profit_change_percent:.1f}%)'
+        elif score > 0:
+            action = 'Consider'
+            reason = f'Mixed results: profit {self.profit_change_percent:+.1f}%, revenue {self.revenue_change_percent:+.1f}%'
+        else:
+            action = 'Not Recommended'
+            reason = f'Negative impact: profit {self.profit_change_percent:+.1f}%, revenue {self.revenue_change_percent:+.1f}%'
+        
+        return {
+            'action': action,
+            'reason': reason,
+            'score': round(score, 2)
         }
 
 

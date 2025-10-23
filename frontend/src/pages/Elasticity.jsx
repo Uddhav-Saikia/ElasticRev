@@ -71,7 +71,7 @@ function Elasticity() {
       {/* Header */}
       <div className="flex justify-between items-start">
         <div>
-          <h1 className="text-3xl font-bold text-gray-900">Price Elasticity</h1>
+          <h1 className="text-3xl font-bold text-gray-100">Price Elasticity</h1>
           <p className="text-gray-600 mt-1">Analyze demand sensitivity to price changes</p>
         </div>
         <button
@@ -92,7 +92,7 @@ function Elasticity() {
       <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
         <div className="card">
           <p className="text-sm text-gray-600">Products Analyzed</p>
-          <p className="text-3xl font-bold text-gray-900 mt-2">{elasticProducts.length}</p>
+          <p className="text-3xl font-bold text-gray-100 mt-2">{elasticProducts.length}</p>
           <p className="text-sm text-gray-500 mt-1">of {products.length} total</p>
         </div>
         <div className="card bg-green-50">
@@ -115,7 +115,7 @@ function Elasticity() {
       {/* Progress */}
       {progress && (
         <div className="card bg-blue-50">
-          <h3 className="font-semibold text-gray-900 mb-2">Calculation Results</h3>
+          <h3 className="font-semibold text-gray-100 mb-2">Calculation Results</h3>
           <div className="grid grid-cols-2 gap-4 text-sm">
             <div>
               <span className="text-gray-600">Successful:</span>
@@ -131,7 +131,7 @@ function Elasticity() {
 
       {/* Products Table */}
       <div className="card">
-        <h2 className="text-lg font-semibold text-gray-900 mb-4">Product Elasticity Analysis</h2>
+  <h2 className="text-lg font-semibold text-gray-100 mb-4">Product Elasticity Analysis</h2>
         <div className="overflow-x-auto">
           <table className="table">
             <thead>
@@ -208,7 +208,7 @@ function Elasticity() {
 
       {/* Explanation */}
       <div className="card bg-blue-50">
-        <h3 className="font-semibold text-gray-900 mb-3">Understanding Price Elasticity</h3>
+  <h3 className="font-semibold text-gray-100 mb-3">Understanding Price Elasticity</h3>
         <div className="space-y-2 text-sm text-gray-700">
           <p>
             <strong>Elasticity Coefficient:</strong> Measures % change in quantity demanded per 1% change in price

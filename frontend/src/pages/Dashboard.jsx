@@ -73,17 +73,21 @@ function Dashboard() {
 
   const handleExport = async () => {
     try {
-      const response = await exportToExcel();
+      const response = await exportToExcel({ days });
       const url = window.URL.createObjectURL(new Blob([response.data]));
       const link = document.createElement('a');
       link.href = url;
-      link.setAttribute('download', `pricing_strategy_${new Date().toISOString().split('T')[0]}.xlsx`);
+      const timestamp = new Date().toISOString().replace(/[:.]/g, '-').slice(0, -5);
+      link.setAttribute('download', `pricing_strategy_report_${timestamp}.xlsx`);
       document.body.appendChild(link);
       link.click();
       link.remove();
+      
+      // Show success notification
+      alert('Report exported successfully!');
     } catch (error) {
       console.error('Export failed:', error);
-      alert('Failed to export report');
+      alert('Failed to export report: ' + (error.response?.data?.error || error.message));
     }
   };
 
