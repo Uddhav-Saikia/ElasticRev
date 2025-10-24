@@ -27,11 +27,11 @@ DATA_DIR = os.path.join(BASE_DIR, 'data')
 UPLOADS_DIR = os.path.join(BASE_DIR, 'uploads')
 EXPORTS_DIR = os.path.join(BASE_DIR, 'exports')
 
-# Create directories if they don't exist
-os.makedirs(os.path.dirname(DATABASE_PATH), exist_ok=True)
-os.makedirs(DATA_DIR, exist_ok=True)
-os.makedirs(UPLOADS_DIR, exist_ok=True)
-os.makedirs(EXPORTS_DIR, exist_ok=True)
+# Create directories if they don't exist (only for dev/local storage)
+if not DATABASE_URL:
+    os.makedirs(DATA_DIR, exist_ok=True)
+    os.makedirs(UPLOADS_DIR, exist_ok=True)
+    os.makedirs(EXPORTS_DIR, exist_ok=True)
 
 # Flask configuration
 SECRET_KEY = os.environ.get('SECRET_KEY', 'dev-secret-key-change-in-production')
@@ -84,9 +84,11 @@ EXCEL_TEMPLATES = {
 }
 
 # CORS Configuration
-CORS_ORIGINS = ['http://localhost:3000', 'http://localhost:3001', 'https://elasticrev-2.onrender.com']
+# Allow environment variable to override CORS origins for production
+CORS_ORIGINS = os.environ.get('CORS_ORIGINS', 'http://localhost:3000,http://localhost:3001,http://localhost:5173').split(',')
 
 # Logging
 LOG_LEVEL = os.environ.get('LOG_LEVEL', 'INFO')
 LOG_FILE = os.path.join(BASE_DIR, 'logs', 'elasticrev.log')
-os.makedirs(os.path.dirname(LOG_FILE), exist_ok=True)
+if not DATABASE_URL:  # Only create log directory in dev
+    os.makedirs(os.path.dirname(LOG_FILE), exist_ok=True)
