@@ -33,7 +33,6 @@ env/
 # Flask
 instance/
 .webassets-cache
-*.db
 *.sqlite
 *.sqlite3
 
@@ -69,7 +68,6 @@ logs/
 .env.local
 
 # Database
-*.db
 *.sqlite
 *.sqlite3
 
