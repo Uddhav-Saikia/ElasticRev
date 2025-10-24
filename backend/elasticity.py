@@ -30,71 +30,87 @@ class ElasticityCalculator:
         Returns:
             dict: Elasticity results
         """
-        # Fetch sales data
-        query = Sale.query.filter_by(product_id=product_id)
-        
-        if start_date:
-            query = query.filter(Sale.date >= start_date)
-        if end_date:
-            query = query.filter(Sale.date <= end_date)
-            
-        sales_data = query.all()
-        
-        if len(sales_data) < 10:
-            return {
-                'error': 'Insufficient data for elasticity calculation',
-                'sample_size': len(sales_data)
-            }
-        
-        # Prepare data
-        df = pd.DataFrame([{
-            'date': sale.date,
-            'price': sale.price,
-            'quantity': sale.quantity,
-            'revenue': sale.revenue,
-            'discount_percent': sale.discount_percent,
-            'competitor_price': sale.competitor_price,
-            'is_holiday': int(sale.is_holiday),
-            'promotion_active': int(sale.promotion_active)
-        } for sale in sales_data])
-        
-        # Calculate log transformations for elasticity
-        df['log_price'] = np.log(df['price'])
-        df['log_quantity'] = np.log(df['quantity'])
-        
-        # Prepare features
-        X = df[['log_price']].values
-        y = df['log_quantity'].values
-        
-        # Add additional features for gradient boosting
-        if model_type == 'gradient_boosting':
-            features = ['log_price', 'discount_percent', 'is_holiday', 'promotion_active']
-            if df['competitor_price'].notna().sum() > 0:
-                df['log_competitor_price'] = np.log(df['competitor_price'].fillna(df['price']))
-                features.append('log_competitor_price')
-            
-            X = df[features].fillna(0).values
-        
-        # Calculate elasticity
-        if model_type == 'linear_regression':
-            result = self._calculate_linear_elasticity(X, y, df)
-        else:
-            result = self._calculate_gradient_boosting_elasticity(X, y, df)
-        
-        # Determine elasticity type
-        elasticity_type = self._classify_elasticity(result['elasticity_coefficient'])
-        result['elasticity_type'] = elasticity_type
-        
-        # Generate recommendations
-        product = Product.query.get(product_id)
-        result['recommendations'] = self._generate_recommendations(
-            product, result['elasticity_coefficient'], df
-        )
-        
-        # Store results in database
-        self._save_results(product_id, result, start_date, end_date, model_type, len(sales_data))
-        
-        return result
+        try:
+            # Fetch sales data
+            query = Sale.query.filter_by(product_id=product_id)
+
+            if start_date:
+                query = query.filter(Sale.date >= start_date)
+            if end_date:
+                query = query.filter(Sale.date <= end_date)
+
+            sales_data = query.all()
+
+            if len(sales_data) < 10:
+                return {
+                    'error': 'Insufficient data for elasticity calculation',
+                    'sample_size': len(sales_data)
+                }
+
+            # Prepare data
+            df = pd.DataFrame([{
+                'date': sale.date,
+                'price': sale.price,
+                'quantity': sale.quantity,
+                'revenue': sale.revenue,
+                'discount_percent': sale.discount_percent,
+                'competitor_price': sale.competitor_price,
+                'is_holiday': int(sale.is_holiday),
+                'promotion_active': int(sale.promotion_active)
+            } for sale in sales_data])
+
+            # Filter out rows with non-positive price/quantity which break log transforms
+            df = df[(df['price'] > 0) & (df['quantity'] > 0)].copy()
+
+            if df.empty or len(df) < 10:
+                return {
+                    'error': 'Insufficient valid sales data (positive price and quantity required)',
+                    'sample_size': len(df)
+                }
+
+            # Calculate log transformations for elasticity
+            df['log_price'] = np.log(df['price'])
+            df['log_quantity'] = np.log(df['quantity'])
+
+            # Prepare features
+            X = df[['log_price']].values
+            y = df['log_quantity'].values
+
+            # Add additional features for gradient boosting
+            if model_type == 'gradient_boosting':
+                features = ['log_price', 'discount_percent', 'is_holiday', 'promotion_active']
+                if df['competitor_price'].notna().sum() > 0:
+                    # Use price fallback when competitor price missing
+                    df['log_competitor_price'] = np.log(df['competitor_price'].fillna(df['price']))
+                    features.append('log_competitor_price')
+
+                X = df[features].fillna(0).values
+
+            # Calculate elasticity
+            if model_type == 'linear_regression':
+                result = self._calculate_linear_elasticity(X, y, df)
+            else:
+                result = self._calculate_gradient_boosting_elasticity(X, y, df)
+
+            # Determine elasticity type
+            elasticity_type = self._classify_elasticity(result.get('elasticity_coefficient', 0.0))
+            result['elasticity_type'] = elasticity_type
+
+            # Generate recommendations
+            product = Product.query.get(product_id)
+            result['recommendations'] = self._generate_recommendations(
+                product, result.get('elasticity_coefficient', 0.0), df
+            )
+
+            # Store results in database
+            self._save_results(product_id, result, start_date, end_date, model_type, len(sales_data))
+
+            return result
+        except Exception as e:
+            tb = traceback.format_exc()
+            print('Elasticity calculation error:', e)
+            print(tb)
+            return {'error': str(e), 'trace': tb}
     
     def _calculate_linear_elasticity(self, X, y, df):
         """Calculate elasticity using linear regression"""
