@@ -11,7 +11,7 @@ sys.path.insert(0, str(Path(__file__).resolve().parent))
 
 from flask import Flask
 from models import db, Product, Sale, PriceHistory, ElasticityResult, Scenario, CompetitorPrice
-from config import SQLALCHEMY_DATABASE_URI, DATABASE_PATH
+from config import SQLALCHEMY_DATABASE_URI, DATABASE_PATH, DATABASE_URL
 import pandas as pd
 from datetime import datetime
 
@@ -25,13 +25,20 @@ def init_database(app=None):
         db.init_app(app)
     
     with app.app_context():
-        # Drop all tables and recreate (for development)
-        print("🗄️  Resetting database...")
-        db.drop_all()
-        print("🗄️  Creating database schema...")
-        db.create_all()
-        print("✓ Database tables created")
-        
+        # In development (no DATABASE_URL) we reset the sqlite DB on demand.
+        # In production (DATABASE_URL set) we must NOT drop tables — keep data persistent.
+        if not DATABASE_URL:
+            print("🗄️  Resetting local (SQLite) database...")
+            db.drop_all()
+            print("🗄️  Creating database schema (local)...")
+            db.create_all()
+            print("✓ Local database tables created/reset")
+        else:
+            # For remote DBs (like Render Postgres) only create missing tables.
+            print("🗄️  Using remote database. Creating any missing tables (no data loss)...")
+            db.create_all()
+            print("✓ Ensured remote database schema exists")
+
         return app
 
 
