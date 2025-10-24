@@ -712,6 +712,94 @@ def data_quality():
 @app.route('/api/export/excel', methods=['GET'])
 def export_to_excel():
     """Export comprehensive pricing strategy report to Excel"""
+    try:
+        days = int(request.args.get('days', 30))
+        
+        # Get dashboard data
+        analytics = get_dashboard_analytics_data(days)
+        
+        # Create workbook
+        wb = Workbook()
+        ws = wb.active
+        ws.title = 'Summary'
+        
+        # Title
+        ws['A1'] = 'ElasticRev - Pricing Strategy Report'
+        ws['A1'].font = Font(size=14, bold=True)
+        ws.merge_cells('A1:D1')
+        
+        ws['A2'] = f'Generated: {datetime.now().strftime("%Y-%m-%d %H:%M:%S")}'
+        ws['A2'].font = Font(size=10, italic=True)
+        
+        # Summary metrics
+        row = 4
+        ws[f'A{row}'] = 'Key Metrics'
+        ws[f'A{row}'].font = Font(bold=True, size=11)
+        
+        row += 1
+        metrics = [
+            ('Total Revenue (30d)', f"${analytics['total_revenue']:,.2f}"),
+            ('Total Profit (30d)', f"${analytics['total_profit']:,.2f}"),
+            ('Products Analyzed', analytics['total_products']),
+            ('Products with Elasticity', analytics['products_with_elasticity']),
+        ]
+        
+        for label, value in metrics:
+            ws[f'A{row}'] = label
+            ws[f'B{row}'] = value
+            ws[f'A{row}'].font = Font(bold=True)
+            row += 1
+        
+        # Products with elasticity
+        row += 2
+        ws[f'A{row}'] = 'Products with Elasticity Analysis'
+        ws[f'A{row}'].font = Font(bold=True, size=11)
+        
+        row += 1
+        elasticity_results = ElasticityResult.query.order_by(
+            ElasticityResult.calculation_date.desc()
+        ).limit(50).all()
+        
+        if elasticity_results:
+            ws[f'A{row}'] = 'Product'
+            ws[f'B{row}'] = 'Elasticity'
+            ws[f'C{row}'] = 'Type'
+            ws[f'D{row}'] = 'Optimal Price'
+            
+            for cell in [f'A{row}', f'B{row}', f'C{row}', f'D{row}']:
+                ws[cell].font = Font(bold=True)
+                ws[cell].fill = PatternFill(start_color='E0E0E0', end_color='E0E0E0', fill_type='solid')
+            
+            row += 1
+            for result in elasticity_results:
+                product = Product.query.get(result.product_id)
+                ws[f'A{row}'] = product.name if product else 'Unknown'
+                ws[f'B{row}'] = round(result.elasticity_coefficient, 3)
+                ws[f'C{row}'] = result.elasticity_type
+                ws[f'D{row}'] = f"${result.optimal_price:.2f}" if result.optimal_price else 'N/A'
+                row += 1
+        
+        # Auto-adjust column widths
+        ws.column_dimensions['A'].width = 25
+        ws.column_dimensions['B'].width = 15
+        ws.column_dimensions['C'].width = 15
+        ws.column_dimensions['D'].width = 15
+        
+        # Save to bytes
+        excel_file = io.BytesIO()
+        wb.save(excel_file)
+        excel_file.seek(0)
+        
+        return send_file(
+            excel_file,
+            mimetype='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+            as_attachment=True,
+            download_name=f'elasticrev-report-{datetime.now().strftime("%Y%m%d-%H%M%S")}.xlsx'
+        )
+    except Exception as e:
+        print(f'Excel export error: {e}')
+        traceback.print_exc()
+        return jsonify({'error': str(e), 'trace': traceback.format_exc()}), 500
 
 
 # ==================== Main ====================
