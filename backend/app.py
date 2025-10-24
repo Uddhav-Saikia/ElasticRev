@@ -28,6 +28,8 @@ app.config['SECRET_KEY'] = SECRET_KEY
 app.config['MAX_CONTENT_LENGTH'] = MAX_CONTENT_LENGTH
 
 # Initialize extensions
+from flask import jsonify
+
 db.init_app(app)
 CORS(app, origins=CORS_ORIGINS)
 
@@ -633,6 +635,13 @@ def export_to_excel():
 
 
 # ==================== Main ====================
+
+# Temporary endpoint to initialize database tables in production
+@app.route('/api/init-db', methods=['POST'])
+def init_db():
+    with app.app_context():
+        db.create_all()
+    return jsonify({"status": "ok", "message": "Database tables created."})
 
 if __name__ == '__main__':
     with app.app_context():
