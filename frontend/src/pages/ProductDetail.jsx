@@ -76,10 +76,12 @@ function ProductDetail() {
     setCalculating(true);
     try {
       console.log('🚀 Starting elasticity calculation for product:', id);
-      const response = await calculateElasticity({
-        product_id: parseInt(id),
-        model_type: 'gradient_boosting'
-      });
+        // Use linear_regression by default (matches bulk calculation on Elasticity page).
+        // Gradient boosting can be more fragile on small samples and may cause server errors.
+        const response = await calculateElasticity({
+          product_id: parseInt(id),
+          model_type: 'linear_regression'
+        });
       console.log('✅ Elasticity calculation response:', response);
       await refetchElasticity();
       alert('Elasticity calculated successfully!');
