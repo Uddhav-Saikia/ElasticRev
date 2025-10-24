@@ -263,8 +263,8 @@ function ProductDetail() {
       <div className="card">
         <div className="flex justify-between items-start mb-6">
           <div>
-            <h2 className="text-xl font-semibold text-slate-900">Price Elasticity Analysis</h2>
-            <p className="text-slate-600 mt-1">Understand how price changes affect demand</p>
+            <h2 className="text-xl font-semibold text-slate-900 dark:text-slate-200">Price Elasticity Analysis</h2>
+            <p className="text-slate-600 dark:text-slate-400 mt-1">Understand how price changes affect demand</p>
           </div>
           <button
             onClick={handleCalculateElasticity}
@@ -372,10 +372,10 @@ function ProductDetail() {
 
       {/* What-If Simulator */}
       <div className="card">
-  <h2 className="text-xl font-semibold text-slate-900 mb-4">What-If Scenario Simulator</h2>
+  <h2 className="text-xl font-semibold text-slate-900 dark:text-slate-200 mb-4">What-If Scenario Simulator</h2>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
           <div className="md:col-span-2">
-            <label className="block text-sm font-medium text-gray-700 mb-2">
+            <label className="block text-sm font-medium text-gray-700 dark:text-slate-400 mb-2">
               Test New Price
             </label>
             <input
