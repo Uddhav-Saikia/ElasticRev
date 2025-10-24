@@ -40,6 +40,35 @@ function Recommendations() {
   const mediumImpact = recommendations.filter(r => (r.expected_revenue_change || 0) > 5 && (r.expected_revenue_change || 0) <= 10);
   const lowImpact = recommendations.filter(r => (r.expected_revenue_change || 0) <= 5);
 
+  const handleExportReport = () => {
+    // Convert recommendations to CSV format
+    const headers = ['Product Name', 'SKU', 'Category', 'Current Price', 'Recommended Price', 'Action', 'Expected Revenue Change', 'Impact Level'];
+    const csvContent = [
+      headers.join(','),
+      ...recommendations.map(rec => [
+        `"${rec.product_name || ''}"`,
+        rec.sku || '',
+        rec.category || '',
+        rec.current_price || '',
+        rec.recommended_price || '',
+        `"${rec.recommended_action || ''}"`,
+        `${rec.expected_revenue_change || 0}%`,
+        (rec.expected_revenue_change || 0) > 10 ? 'High' : (rec.expected_revenue_change || 0) > 5 ? 'Medium' : 'Low'
+      ].join(','))
+    ].join('\n');
+
+    // Create blob and download
+    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+    const link = document.createElement('a');
+    const url = URL.createObjectURL(blob);
+    link.setAttribute('href', url);
+    link.setAttribute('download', `pricing_recommendations_${new Date().toISOString().split('T')[0]}.csv`);
+    link.style.visibility = 'hidden';
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  };
+
   return (
     <div className="space-y-6">
       {/* Header */}
@@ -69,7 +98,11 @@ function Recommendations() {
             </select>
           </div>
           <div className="flex items-end">
-            <button className="btn btn-primary w-full flex items-center justify-center gap-2">
+            <button 
+              onClick={handleExportReport}
+              disabled={recommendations.length === 0}
+              className="btn btn-primary w-full flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
+            >
               <Download className="h-4 w-4" />
               Export Report
             </button>
