@@ -40,11 +40,11 @@ function StatCard({ title, value, icon: Icon, trend, color = 'primary' }) {
       <div className="flex items-center justify-between relative z-10">
         <div className="flex-1">
           <p className="text-sm font-semibold text-primary-300 uppercase tracking-wide">{title}</p>
-          <p className="text-3xl font-bold text-white mt-2 bg-gradient-to-r from-white to-gray-100 bg-clip-text text-transparent">
+          <p className="text-3xl font-bold text-primary-700 mt-2">
             {value}
           </p>
           {trend && (
-            <p className="text-sm text-gray-400 mt-2 flex items-center gap-1">
+            <p className="text-sm text-slate-500 mt-2 flex items-center gap-1">
               <TrendingUp className="h-3 w-3" />
               {trend}
             </p>
@@ -125,7 +125,7 @@ function Dashboard() {
   if (!analytics) {
     return (
       <div className="card text-center py-12">
-        <p className="text-gray-600">No analytics data available</p>
+        <p className="text-slate-600">No analytics data available</p>
         <button 
           onClick={() => refetch()}
           className="btn btn-primary mt-4"
@@ -146,7 +146,7 @@ function Dashboard() {
           <h1 className="text-4xl font-bold bg-gradient-to-r from-primary-400 via-accent-400 to-primary-400 bg-clip-text text-transparent">
             Dashboard
           </h1>
-          <p className="text-gray-400 mt-2 text-lg">Dynamic Pricing Analytics Overview</p>
+          <p className="text-slate-500 mt-2 text-lg">Dynamic Pricing Analytics Overview</p>
         </div>
         <div className="flex gap-3">
           <select

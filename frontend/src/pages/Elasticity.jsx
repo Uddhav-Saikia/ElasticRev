@@ -84,8 +84,8 @@ function Elasticity() {
       {/* Header */}
       <div className="flex justify-between items-start">
         <div>
-          <h1 className="text-3xl font-bold text-gray-100">Price Elasticity</h1>
-          <p className="text-gray-600 mt-1">Analyze demand sensitivity to price changes</p>
+          <h1 className="text-3xl font-bold text-slate-900">Price Elasticity</h1>
+          <p className="text-slate-600 mt-1">Analyze demand sensitivity to price changes</p>
         </div>
         <button
           onClick={handleBulkCalculate}
@@ -104,38 +104,38 @@ function Elasticity() {
       {/* Summary Cards */}
       <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
         <div className="card">
-          <p className="text-sm text-gray-600">Products Analyzed</p>
-          <p className="text-3xl font-bold text-gray-100 mt-2">{elasticProducts.length}</p>
-          <p className="text-sm text-gray-500 mt-1">of {products.length} total</p>
+          <p className="text-sm text-slate-600">Products Analyzed</p>
+          <p className="text-3xl font-bold text-slate-900 mt-2">{elasticProducts.length}</p>
+          <p className="text-sm text-slate-500 mt-1">of {products.length} total</p>
         </div>
-        <div className="card bg-green-50">
-          <p className="text-sm text-gray-600">Inelastic</p>
+        <div className="card bg-gradient-to-br from-green-50 to-emerald-50">
+          <p className="text-sm text-slate-600">Inelastic</p>
           <p className="text-3xl font-bold text-green-600 mt-2">{inelasticCount}</p>
-          <p className="text-sm text-gray-500 mt-1">Price insensitive</p>
+          <p className="text-sm text-slate-500 mt-1">Price insensitive</p>
         </div>
-        <div className="card bg-red-50">
-          <p className="text-sm text-gray-600">Elastic</p>
+        <div className="card bg-gradient-to-br from-red-50 to-rose-50">
+          <p className="text-sm text-slate-600">Elastic</p>
           <p className="text-3xl font-bold text-red-600 mt-2">{elasticCount}</p>
-          <p className="text-sm text-gray-500 mt-1">Price sensitive</p>
+          <p className="text-sm text-slate-500 mt-1">Price sensitive</p>
         </div>
-        <div className="card bg-yellow-50">
-          <p className="text-sm text-gray-600">Unit Elastic</p>
+        <div className="card bg-gradient-to-br from-yellow-50 to-amber-50">
+          <p className="text-sm text-slate-600">Unit Elastic</p>
           <p className="text-3xl font-bold text-yellow-600 mt-2">{unitElasticCount}</p>
-          <p className="text-sm text-gray-500 mt-1">Balanced</p>
+          <p className="text-sm text-slate-500 mt-1">Balanced</p>
         </div>
       </div>
 
       {/* Progress */}
       {progress && (
-        <div className="card bg-blue-50">
-          <h3 className="font-semibold text-gray-100 mb-2">Calculation Results</h3>
+        <div className="card bg-gradient-to-br from-blue-50 to-primary-50">
+          <h3 className="font-semibold text-slate-900 mb-2">Calculation Results</h3>
           <div className="grid grid-cols-2 gap-4 text-sm">
             <div>
-              <span className="text-gray-600">Successful:</span>
+              <span className="text-slate-600">Successful:</span>
               <span className="ml-2 font-medium text-green-600">{progress.total_calculated}</span>
             </div>
             <div>
-              <span className="text-gray-600">Errors:</span>
+              <span className="text-slate-600">Errors:</span>
               <span className="ml-2 font-medium text-red-600">{progress.total_errors}</span>
             </div>
           </div>
@@ -144,7 +144,7 @@ function Elasticity() {
 
       {/* Products Table */}
       <div className="card">
-  <h2 className="text-lg font-semibold text-gray-100 mb-4">Product Elasticity Analysis</h2>
+  <h2 className="text-lg font-semibold text-slate-900 mb-4">Product Elasticity Analysis</h2>
         <div className="overflow-x-auto">
           <table className="table">
             <thead>
@@ -164,7 +164,7 @@ function Elasticity() {
             <tbody>
               {elasticProducts.length === 0 ? (
                 <tr>
-                  <td colSpan="10" className="text-center py-8 text-gray-500">
+                  <td colSpan="10" className="text-center py-8 text-slate-500">
                     No elasticity data available. Click "Calculate All" to analyze products.
                   </td>
                 </tr>
@@ -199,12 +199,12 @@ function Elasticity() {
                       </td>
                       <td>
                         <span
-                          className={`text-xs px-2 py-1 rounded-full bg-gray-100 whitespace-nowrap flex flex-row items-center ${
+                          className={`text-xs px-2 py-1 rounded-full bg-slate-100 whitespace-nowrap flex flex-row items-center ${
                             elasticity.recommended_action === 'Decrease Price'
-                              ? 'text-red-600'
+                              ? 'text-red-600 font-semibold'
                               : elasticity.recommended_action === 'Increase Price'
-                              ? 'text-green-600'
-                              : 'text-gray-800'
+                              ? 'text-green-600 font-semibold'
+                              : 'text-slate-700'
                           }`}
                         >
                           {elasticity.recommended_action || 'N/A'}
@@ -228,28 +228,28 @@ function Elasticity() {
       </div>
 
       {/* Explanation */}
-      <div className="card bg-blue-50">
-  <h3 className="font-semibold text-gray-100 mb-3">Understanding Price Elasticity</h3>
-        <div className="space-y-2 text-sm text-gray-700">
+      <div className="card bg-gradient-to-br from-blue-50 to-primary-50">
+  <h3 className="font-semibold text-slate-900 mb-3">Understanding Price Elasticity</h3>
+        <div className="space-y-2 text-sm text-slate-700">
           <p>
             <strong>Elasticity Coefficient:</strong> Measures % change in quantity demanded per 1% change in price
           </p>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mt-3">
-            <div className="bg-white p-3 rounded">
+            <div className="bg-white p-3 rounded shadow-sm">
               <div className="flex items-center gap-2 mb-2">
                 <TrendingUp className="h-4 w-4 text-green-600" />
                 <strong className="text-green-600">Inelastic (|e| &lt; 1)</strong>
               </div>
               <p className="text-xs">Demand insensitive to price. Increase prices to boost revenue.</p>
             </div>
-            <div className="bg-white p-3 rounded">
+            <div className="bg-white p-3 rounded shadow-sm">
               <div className="flex items-center gap-2 mb-2">
                 <TrendingDown className="h-4 w-4 text-red-600" />
                 <strong className="text-red-600">Elastic (|e| &gt; 1)</strong>
               </div>
               <p className="text-xs">Demand sensitive to price. Lower prices to increase volume and revenue.</p>
             </div>
-            <div className="bg-white p-3 rounded">
+            <div className="bg-white p-3 rounded shadow-sm">
               <div className="flex items-center gap-2 mb-2">
                 <Minus className="h-4 w-4 text-yellow-600" />
                 <strong className="text-yellow-600">Unit Elastic (|e| ≈ 1)</strong>

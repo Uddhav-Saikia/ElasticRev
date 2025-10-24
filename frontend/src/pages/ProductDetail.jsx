@@ -214,46 +214,46 @@ function ProductDetail() {
           <ArrowLeft className="h-4 w-4" />
         </Link>
         <div>
-          <h1 className="text-3xl font-bold text-gray-100">{safeProduct.name}</h1>
-          <p className="text-gray-600 mt-1">{safeProduct.sku} • {safeProduct.category}</p>
+          <h1 className="text-3xl font-bold text-slate-900">{safeProduct.name}</h1>
+          <p className="text-slate-600 mt-1">{safeProduct.sku} • {safeProduct.category}</p>
         </div>
       </div>
 
       {/* Product Stats */}
       <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
         <div className="card">
-          <p className="text-sm text-gray-600">Current Price</p>
+          <p className="text-sm text-slate-600">Current Price</p>
           <p className="text-2xl font-bold text-primary-600 mt-2">
             ${safeProduct.current_price}
           </p>
-          <p className="text-sm text-gray-500 mt-1">
+          <p className="text-sm text-slate-500 mt-1">
             Cost: ${safeProduct.unit_cost}
           </p>
         </div>
         <div className="card">
-          <p className="text-sm text-gray-600">Margin</p>
+          <p className="text-sm text-slate-600">Margin</p>
           <p className="text-2xl font-bold text-green-600 mt-2">
             {safeProduct.margin}%
           </p>
-          <p className="text-sm text-gray-500 mt-1">
+          <p className="text-sm text-slate-500 mt-1">
             ${(safeProduct.current_price - safeProduct.unit_cost).toFixed(2)} profit
           </p>
         </div>
         <div className="card">
-          <p className="text-sm text-gray-600">Total Sales (90d)</p>
-          <p className="text-2xl font-bold text-gray-100 mt-2">
+          <p className="text-sm text-slate-600">Total Sales (90d)</p>
+          <p className="text-2xl font-bold text-slate-900 mt-2">
             {safeSalesSummary.total_quantity?.toLocaleString() || 0}
           </p>
-          <p className="text-sm text-gray-500 mt-1">
+          <p className="text-sm text-slate-500 mt-1">
             {safeSalesSummary.total_transactions || 0} transactions
           </p>
         </div>
         <div className="card">
-          <p className="text-sm text-gray-600">Revenue (90d)</p>
-          <p className="text-2xl font-bold text-gray-100 mt-2">
+          <p className="text-sm text-slate-600">Revenue (90d)</p>
+          <p className="text-2xl font-bold text-slate-900 mt-2">
             ${safeSalesSummary.total_revenue?.toLocaleString(undefined, { maximumFractionDigits: 0 }) || 0}
           </p>
-          <p className="text-sm text-gray-500 mt-1">
+          <p className="text-sm text-slate-500 mt-1">
             ${safeSalesSummary.total_profit?.toLocaleString(undefined, { maximumFractionDigits: 0 }) || 0} profit
           </p>
         </div>
@@ -263,8 +263,8 @@ function ProductDetail() {
       <div className="card">
         <div className="flex justify-between items-start mb-6">
           <div>
-            <h2 className="text-xl font-semibold text-gray-100">Price Elasticity Analysis</h2>
-            <p className="text-gray-600 mt-1">Understand how price changes affect demand</p>
+            <h2 className="text-xl font-semibold text-slate-900">Price Elasticity Analysis</h2>
+            <p className="text-slate-600 mt-1">Understand how price changes affect demand</p>
           </div>
           <button
             onClick={handleCalculateElasticity}
@@ -284,37 +284,37 @@ function ProductDetail() {
           <div className="space-y-6">
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
               <div className="bg-blue-50 p-4 rounded-lg">
-                <p className="text-sm text-gray-600">Elasticity Coefficient</p>
+                <p className="text-sm text-slate-600">Elasticity Coefficient</p>
                 <p className="text-2xl font-bold text-blue-600 mt-1">
                   {safeElasticity.elasticity_coefficient?.toFixed(3)}
                 </p>
-                <p className="text-sm text-gray-500 mt-1">{safeElasticity.elasticity_type}</p>
+                <p className="text-sm text-slate-500 mt-1">{safeElasticity.elasticity_type}</p>
               </div>
               
               <div className="bg-green-50 p-4 rounded-lg">
-                <p className="text-sm text-gray-600">Optimal Price</p>
+                <p className="text-sm text-slate-600">Optimal Price</p>
                 <p className="text-2xl font-bold text-green-600 mt-1">
                   ${safeElasticity.optimal_price ? safeElasticity.optimal_price.toFixed(2) : safeProduct.current_price.toFixed(2)}
                 </p>
-                <p className="text-sm text-gray-500 mt-1">
+                <p className="text-sm text-slate-500 mt-1">
                   {safeElasticity.optimal_price ? ((safeElasticity.optimal_price - safeProduct.current_price) / safeProduct.current_price * 100).toFixed(1) : '0'}% change
                 </p>
               </div>
 
               <div className="bg-purple-50 p-4 rounded-lg">
-                <p className="text-sm text-gray-600">Revenue Impact</p>
+                <p className="text-sm text-slate-600">Revenue Impact</p>
                 <p className={`text-2xl font-bold mt-1 ${(safeElasticity.expected_revenue_change ?? 0) >= 0 ? 'text-green-600' : 'text-red-600'}`}>
                   {(safeElasticity.expected_revenue_change ?? 0) >= 0 ? '+' : ''}
                   {(safeElasticity.expected_revenue_change ?? 0).toFixed(1)}%
                 </p>
-                <p className="text-sm text-gray-500 mt-1">{safeElasticity.recommended_action || 'No recommendation'}</p>
+                <p className="text-sm text-slate-500 mt-1">{safeElasticity.recommended_action || 'No recommendation'}</p>
               </div>
             </div>
 
             {/* Elasticity Curve */}
             {chartData.length > 0 && (
               <div>
-                <h3 className="text-lg font-semibold text-gray-100 mb-4">Demand Elasticity Curve</h3>
+                <h3 className="text-lg font-semibold text-slate-900 mb-4">Demand Elasticity Curve</h3>
                 <ResponsiveContainer width="100%" height={350}>
                   <LineChart data={chartData}>
                     <CartesianGrid strokeDasharray="3 3" />
@@ -362,8 +362,8 @@ function ProductDetail() {
             )}
           </div>
         ) : (
-          <div className="text-center py-8 text-gray-600">
-            <Calculator className="h-12 w-12 mx-auto mb-4 text-gray-400" />
+          <div className="text-center py-8 text-slate-600">
+            <Calculator className="h-12 w-12 mx-auto mb-4 text-slate-500" />
             <p>No elasticity data available</p>
             <p className="text-sm mt-2">Click "Calculate Elasticity" to analyze this product</p>
           </div>
@@ -372,7 +372,7 @@ function ProductDetail() {
 
       {/* What-If Simulator */}
       <div className="card">
-  <h2 className="text-xl font-semibold text-gray-100 mb-4">What-If Scenario Simulator</h2>
+  <h2 className="text-xl font-semibold text-slate-900 mb-4">What-If Scenario Simulator</h2>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
           <div className="md:col-span-2">
             <label className="block text-sm font-medium text-gray-700 mb-2">
@@ -402,31 +402,31 @@ function ProductDetail() {
         {simulationResult && (
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mt-6 p-4 bg-gray-50 rounded-lg">
             <div>
-              <p className="text-sm text-gray-600">Predicted Revenue Change</p>
+              <p className="text-sm text-slate-600">Predicted Revenue Change</p>
               <p className={`text-xl font-bold mt-1 ${simulationResult.revenue.revenue_change_percent >= 0 ? 'text-green-600' : 'text-red-600'}`}>
                 {simulationResult.revenue.revenue_change_percent >= 0 ? '+' : ''}
                 {simulationResult.revenue.revenue_change_percent}%
               </p>
-              <p className="text-sm text-gray-500">
+              <p className="text-sm text-slate-500">
                 ${simulationResult.revenue.total_revenue_change.toLocaleString()}
               </p>
             </div>
             <div>
-              <p className="text-sm text-gray-600">Predicted Profit Change</p>
+              <p className="text-sm text-slate-600">Predicted Profit Change</p>
               <p className={`text-xl font-bold mt-1 ${simulationResult.profit.profit_change_percent >= 0 ? 'text-green-600' : 'text-red-600'}`}>
                 {simulationResult.profit.profit_change_percent >= 0 ? '+' : ''}
                 {simulationResult.profit.profit_change_percent}%
               </p>
-              <p className="text-sm text-gray-500">
+              <p className="text-sm text-slate-500">
                 ${simulationResult.profit.total_profit_change.toLocaleString()}
               </p>
             </div>
             <div>
-              <p className="text-sm text-gray-600">Recommendation</p>
-              <p className="text-xl font-bold mt-1 text-gray-100">
+              <p className="text-sm text-slate-600">Recommendation</p>
+              <p className="text-xl font-bold mt-1 text-slate-900">
                 {simulationResult.recommendation.action}
               </p>
-              <p className="text-sm text-gray-500">
+              <p className="text-sm text-slate-500">
                 {simulationResult.recommendation.risk_level} risk
               </p>
             </div>

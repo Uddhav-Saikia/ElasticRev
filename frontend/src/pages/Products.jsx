@@ -27,8 +27,8 @@ function Products() {
     <div className="space-y-6">
       {/* Header */}
       <div>
-  <h1 className="text-3xl font-bold text-gray-100">Products</h1>
-        <p className="text-gray-600 mt-1">Manage and analyze product pricing</p>
+  <h1 className="text-3xl font-bold text-slate-900">Products</h1>
+        <p className="text-slate-600 mt-1">Manage and analyze product pricing</p>
       </div>
 
       {/* Filters */}
@@ -39,7 +39,7 @@ function Products() {
               Search Products
             </label>
             <div className="relative">
-              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-gray-400" />
+              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-slate-500" />
               <input
                 type="text"
                 value={search}
@@ -79,11 +79,11 @@ function Products() {
       {isLoading ? (
         <div className="text-center py-12">
           <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary-600 mx-auto"></div>
-          <p className="text-gray-600 mt-4">Loading products...</p>
+          <p className="text-slate-600 mt-4">Loading products...</p>
         </div>
       ) : products.length === 0 ? (
         <div className="card text-center py-12">
-          <p className="text-gray-600">No products found</p>
+          <p className="text-slate-600">No products found</p>
         </div>
       ) : (
         <>
@@ -96,31 +96,31 @@ function Products() {
               >
                 <div className="flex justify-between items-start mb-3">
                   <div>
-                    <h3 className="font-semibold text-gray-100 group-hover:text-primary-600 transition-colors">
+                    <h3 className="font-semibold text-slate-900 group-hover:text-primary-600 transition-colors">
                       {product.name}
                     </h3>
-                    <p className="text-sm text-gray-500">{product.sku}</p>
+                    <p className="text-sm text-slate-500">{product.sku}</p>
                   </div>
-                  <ChevronRight className="h-5 w-5 text-gray-400 group-hover:text-primary-600" />
+                  <ChevronRight className="h-5 w-5 text-slate-500 group-hover:text-primary-600" />
                 </div>
                 
                 <div className="space-y-2">
                   <div className="flex justify-between text-sm">
-                    <span className="text-gray-600">Category:</span>
+                    <span className="text-slate-600">Category:</span>
                     <span className="font-medium">{product.category}</span>
                   </div>
                   <div className="flex justify-between text-sm">
-                    <span className="text-gray-600">Brand:</span>
+                    <span className="text-slate-600">Brand:</span>
                     <span className="font-medium">{product.brand}</span>
                   </div>
                   <div className="flex justify-between text-sm">
-                    <span className="text-gray-600">Price:</span>
+                    <span className="text-slate-600">Price:</span>
                     <span className="font-bold text-lg text-primary-600">
                       ${product.current_price}
                     </span>
                   </div>
                   <div className="flex justify-between text-sm">
-                    <span className="text-gray-600">Margin:</span>
+                    <span className="text-slate-600">Margin:</span>
                     <span className={`font-medium ${product.margin >= 30 ? 'text-green-600' : 'text-yellow-600'}`}>
                       {product.margin}%
                     </span>
