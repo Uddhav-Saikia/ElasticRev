@@ -4,6 +4,12 @@ from pathlib import Path
 # Base directory
 BASE_DIR = Path(__file__).resolve().parent.parent
 
+# Always expose a DATABASE_PATH constant (points to local sqlite file). In production
+# when DATABASE_URL is set this won't be used for the connection but other modules
+# may still import DATABASE_PATH for paths or tests — define it unconditionally to
+# avoid import errors when DATABASE_URL exists.
+DATABASE_PATH = os.path.join(BASE_DIR, 'database', 'elasticrev.db')
+
 # Database configuration
 # Use PostgreSQL for production, SQLite for development
 DATABASE_URL = os.environ.get('DATABASE_URL')
@@ -16,8 +22,8 @@ if DATABASE_URL:
     SQLALCHEMY_DATABASE_URI = DATABASE_URL
 else:
     # Development: Use SQLite
-    DATABASE_PATH = os.path.join(BASE_DIR, 'database', 'elasticrev.db')
     SQLALCHEMY_DATABASE_URI = f'sqlite:///{DATABASE_PATH}'
+    # Create the containing directory for the sqlite file in development
     os.makedirs(os.path.dirname(DATABASE_PATH), exist_ok=True)
 
 SQLALCHEMY_TRACK_MODIFICATIONS = False
