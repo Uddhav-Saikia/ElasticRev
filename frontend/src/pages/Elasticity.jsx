@@ -176,13 +176,13 @@ function Elasticity() {
                         {elasticity.r_squared ? elasticity.r_squared.toFixed(3) : 'N/A'}
                       </td>
                       <td className="text-right font-medium text-primary-600">
-                        ${elasticity.optimal_price || 'N/A'}
+                        ${elasticity.optimal_price ? elasticity.optimal_price.toFixed(2) : 'N/A'}
                       </td>
                       <td className={`text-right font-medium ${
-                        (elasticity.expected_revenue_change || 0) >= 0 ? 'text-green-600' : 'text-red-600'
+                        (elasticity.expected_revenue_change ?? 0) >= 0 ? 'text-green-600' : 'text-red-600'
                       }`}>
-                        {elasticity.expected_revenue_change >= 0 ? '+' : ''}
-                        {elasticity.expected_revenue_change?.toFixed(1) || 'N/A'}%
+                        {(elasticity.expected_revenue_change ?? 0) >= 0 ? '+' : ''}
+                        {elasticity.expected_revenue_change !== null && elasticity.expected_revenue_change !== undefined ? elasticity.expected_revenue_change.toFixed(1) : 'N/A'}%
                       </td>
                       <td>
                         <span className="text-xs px-2 py-1 rounded-full bg-gray-100">

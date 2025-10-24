@@ -139,17 +139,17 @@ function Recommendations() {
                     <div className="flex items-center gap-8">
                       <div className="text-right">
                         <p className="text-sm text-gray-600">Current Price</p>
-                        <p className="text-lg font-bold text-gray-100">${rec.current_price}</p>
+                        <p className="text-lg font-bold text-gray-100">${(rec.current_price ?? 0).toFixed(2)}</p>
                       </div>
                       <ArrowRight className="h-5 w-5 text-gray-400" />
                       <div className="text-right">
                         <p className="text-sm text-gray-600">Optimal Price</p>
-                        <p className="text-lg font-bold text-primary-600">${rec.optimal_price}</p>
+                        <p className="text-lg font-bold text-primary-600">${(rec.optimal_price ?? rec.current_price ?? 0).toFixed(2)}</p>
                       </div>
                       <div className="text-right">
                         <p className="text-sm text-gray-600">Expected Impact</p>
                         <p className="text-lg font-bold text-green-600">
-                          +{rec.expected_revenue_change.toFixed(1)}%
+                          +{((rec.expected_revenue_change ?? 0).toFixed(1))}%
                         </p>
                       </div>
                       <Link
@@ -190,34 +190,34 @@ function Recommendations() {
                       <tr key={rec.product_id}>
                         <td className="font-medium">{rec.product_name}</td>
                         <td>{rec.category}</td>
-                        <td className="text-right">${rec.current_price}</td>
+                        <td className="text-right">${(rec.current_price ?? 0).toFixed(2)}</td>
                         <td className="text-right font-bold text-primary-600">
-                          ${rec.optimal_price}
+                          ${(rec.optimal_price ?? rec.current_price ?? 0).toFixed(2)}
                         </td>
                         <td className={`text-right font-bold ${
-                          priceChange >= 0 ? 'text-green-600' : 'text-red-600'
+                          (((rec.optimal_price ?? rec.current_price ?? 0) - (rec.current_price ?? 0)) / (rec.current_price ?? 1)) * 100 >= 0 ? 'text-green-600' : 'text-red-600'
                         }`}>
-                          {priceChange >= 0 ? '+' : ''}{priceChange.toFixed(1)}%
+                          {(((rec.optimal_price ?? rec.current_price ?? 0) - (rec.current_price ?? 0)) / (rec.current_price ?? 1)) * 100 >= 0 ? '+' : ''}{((((rec.optimal_price ?? rec.current_price ?? 0) - (rec.current_price ?? 0)) / (rec.current_price ?? 1)) * 100).toFixed(1)}%
                         </td>
                         <td className="text-center">
                           <span className="text-xs px-2 py-1 rounded-full bg-gray-100">
-                            {rec.elasticity_type}
+                            {rec.elasticity_type || 'N/A'}
                           </span>
                           <div className="text-xs text-gray-500">
-                            {rec.elasticity_coefficient.toFixed(2)}
+                            {rec.elasticity_coefficient ? rec.elasticity_coefficient.toFixed(2) : 'N/A'}
                           </div>
                         </td>
                         <td>
                           <div className="flex items-center gap-2">
                             {getActionIcon(rec.recommended_action)}
-                            <span className="text-sm">{rec.recommended_action}</span>
+                            <span className="text-sm">{rec.recommended_action || 'N/A'}</span>
                           </div>
                         </td>
                         <td className={`text-right font-bold ${
-                          (rec.expected_revenue_change || 0) >= 0 ? 'text-green-600' : 'text-red-600'
+                          (rec.expected_revenue_change ?? 0) >= 0 ? 'text-green-600' : 'text-red-600'
                         }`}>
-                          {rec.expected_revenue_change >= 0 ? '+' : ''}
-                          {rec.expected_revenue_change?.toFixed(1)}%
+                          {(rec.expected_revenue_change ?? 0) >= 0 ? '+' : ''}
+                          {(rec.expected_revenue_change ?? 0).toFixed(1)}%
                         </td>
                         <td>
                           <Link

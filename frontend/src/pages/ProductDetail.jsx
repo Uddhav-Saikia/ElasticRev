@@ -274,28 +274,28 @@ function ProductDetail() {
               <div className="bg-blue-50 p-4 rounded-lg">
                 <p className="text-sm text-gray-600">Elasticity Coefficient</p>
                 <p className="text-2xl font-bold text-blue-600 mt-1">
-                  {elasticity.elasticity_coefficient?.toFixed(3)}
+                  {safeElasticity.elasticity_coefficient?.toFixed(3)}
                 </p>
-                <p className="text-sm text-gray-500 mt-1">{elasticity.elasticity_type}</p>
+                <p className="text-sm text-gray-500 mt-1">{safeElasticity.elasticity_type}</p>
               </div>
               
               <div className="bg-green-50 p-4 rounded-lg">
                 <p className="text-sm text-gray-600">Optimal Price</p>
                 <p className="text-2xl font-bold text-green-600 mt-1">
-                  ${elasticity.optimal_price}
+                  ${safeElasticity.optimal_price ? safeElasticity.optimal_price.toFixed(2) : safeProduct.current_price.toFixed(2)}
                 </p>
                 <p className="text-sm text-gray-500 mt-1">
-                  {((elasticity.optimal_price - safeProduct.current_price) / safeProduct.current_price * 100).toFixed(1)}% change
+                  {safeElasticity.optimal_price ? ((safeElasticity.optimal_price - safeProduct.current_price) / safeProduct.current_price * 100).toFixed(1) : '0'}% change
                 </p>
               </div>
 
               <div className="bg-purple-50 p-4 rounded-lg">
                 <p className="text-sm text-gray-600">Revenue Impact</p>
-                <p className={`text-2xl font-bold mt-1 ${elasticity.expected_revenue_change >= 0 ? 'text-green-600' : 'text-red-600'}`}>
-                  {elasticity.expected_revenue_change >= 0 ? '+' : ''}
-                  {elasticity.expected_revenue_change?.toFixed(1)}%
+                <p className={`text-2xl font-bold mt-1 ${(safeElasticity.expected_revenue_change ?? 0) >= 0 ? 'text-green-600' : 'text-red-600'}`}>
+                  {(safeElasticity.expected_revenue_change ?? 0) >= 0 ? '+' : ''}
+                  {(safeElasticity.expected_revenue_change ?? 0).toFixed(1)}%
                 </p>
-                <p className="text-sm text-gray-500 mt-1">{elasticity.recommended_action}</p>
+                <p className="text-sm text-gray-500 mt-1">{safeElasticity.recommended_action || 'No recommendation'}</p>
               </div>
             </div>
 
