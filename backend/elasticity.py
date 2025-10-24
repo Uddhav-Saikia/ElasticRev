@@ -117,7 +117,7 @@ class ElasticityCalculator:
         # Fit OLS model
         X_with_const = sm.add_constant(X)
         model = sm.OLS(y, X_with_const).fit()
-        
+            
         elasticity = model.params[1]  # Coefficient of log_price
         
         # Calculate confidence interval
