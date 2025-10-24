@@ -122,6 +122,7 @@ def get_products():
         search = request.args.get('search')
         page = int(request.args.get('page', 1))
         per_page = int(request.args.get('per_page', 50))
+        include_elasticity = request.args.get('include_elasticity', 'false').lower() == 'true'
         
         query = Product.query
         
@@ -133,7 +134,22 @@ def get_products():
         
         pagination = query.paginate(page=page, per_page=per_page, error_out=False)
         
-        products = [product.to_dict() for product in pagination.items]
+        products = []
+        for product in pagination.items:
+            product_dict = product.to_dict()
+            
+            # Include latest elasticity if requested
+            if include_elasticity:
+                latest_elasticity = ElasticityResult.query.filter_by(
+                    product_id=product.id
+                ).order_by(ElasticityResult.calculation_date.desc()).first()
+                
+                if latest_elasticity:
+                    product_dict['elasticity'] = latest_elasticity.to_dict()
+                else:
+                    product_dict['elasticity'] = None
+            
+            products.append(product_dict)
         
         return jsonify({
             'products': products,

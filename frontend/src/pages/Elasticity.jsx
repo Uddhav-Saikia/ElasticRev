@@ -10,7 +10,7 @@ function Elasticity() {
 
   const { data: productsData, refetch } = useQuery(
     ['products-with-elasticity'],
-    () => getProducts({ per_page: 100 }).then(res => res.data)
+    () => getProducts({ per_page: 100, include_elasticity: true }).then(res => res.data)
   );
 
   const products = productsData?.products || [];
@@ -198,7 +198,15 @@ function Elasticity() {
                         {elasticity.expected_revenue_change !== null && elasticity.expected_revenue_change !== undefined ? elasticity.expected_revenue_change.toFixed(1) : 'N/A'}%
                       </td>
                       <td>
-                        <span className="text-xs px-2 py-1 rounded-full bg-gray-100">
+                        <span
+                          className={`text-xs px-2 py-1 rounded-full bg-gray-100 whitespace-nowrap flex flex-row items-center ${
+                            elasticity.recommended_action === 'Decrease Price'
+                              ? 'text-red-600'
+                              : elasticity.recommended_action === 'Increase Price'
+                              ? 'text-green-600'
+                              : 'text-gray-800'
+                          }`}
+                        >
                           {elasticity.recommended_action || 'N/A'}
                         </span>
                       </td>

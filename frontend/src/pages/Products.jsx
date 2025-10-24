@@ -47,7 +47,7 @@ function Products() {
                   setSearch(e.target.value);
                   setPage(1);
                 }}
-                placeholder="Search by name or SKU..."
+                placeholder="Search by name..."
                 className="input pl-10 w-full"
               />
             </div>
