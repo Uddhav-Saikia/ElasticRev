@@ -200,12 +200,32 @@ function Recommendations() {
                           {(((rec.optimal_price ?? rec.current_price ?? 0) - (rec.current_price ?? 0)) / (rec.current_price ?? 1)) * 100 >= 0 ? '+' : ''}{((((rec.optimal_price ?? rec.current_price ?? 0) - (rec.current_price ?? 0)) / (rec.current_price ?? 1)) * 100).toFixed(1)}%
                         </td>
                         <td className="text-center">
-                          <span className="text-xs px-2 py-1 rounded-full bg-gray-100">
+                          <span
+                            className={`text-xs px-2 py-1 rounded-full bg-gray-100 whitespace-nowrap flex flex-row items-center ${
+                              rec.elasticity_type === 'elastic' || rec.elasticity_type === 'highly_elastic'
+                                ? 'text-red-600'
+                                : rec.elasticity_type === 'inelastic'
+                                ? 'text-green-600'
+                                : rec.elasticity_type === 'unit_elastic'
+                                ? 'text-yellow-600'
+                                : 'text-gray-800'
+                            }`}
+                          >
                             {rec.elasticity_type || 'N/A'}
                           </span>
-                          <div className="text-xs text-gray-500">
+                          <span
+                            className={`text-xs ml-2 font-mono ${
+                              rec.elasticity_coefficient > 1
+                                ? 'text-red-600'
+                                : rec.elasticity_coefficient < 1 && rec.elasticity_coefficient !== null && rec.elasticity_coefficient !== undefined
+                                ? 'text-green-600'
+                                : rec.elasticity_coefficient === 1
+                                ? 'text-yellow-600'
+                                : 'text-gray-500'
+                            }`}
+                          >
                             {rec.elasticity_coefficient ? rec.elasticity_coefficient.toFixed(2) : 'N/A'}
-                          </div>
+                          </span>
                         </td>
                         <td>
                           <div className="flex items-center gap-2">
