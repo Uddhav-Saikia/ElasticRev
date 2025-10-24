@@ -84,8 +84,8 @@ function Elasticity() {
       {/* Header */}
       <div className="flex justify-between items-start">
         <div>
-          <h1 className="text-3xl font-bold text-slate-900">Price Elasticity</h1>
-          <p className="text-slate-600 mt-1">Analyze demand sensitivity to price changes</p>
+          <h1 className="text-3xl font-bold text-slate-900 dark:text-white">Product Elasticity Analysis</h1>
+          <p className="text-slate-600 dark:text-slate-400 mt-1">Analyze demand sensitivity to price changes</p>
         </div>
         <button
           onClick={handleBulkCalculate}
@@ -104,30 +104,30 @@ function Elasticity() {
       {/* Summary Cards */}
       <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
         <div className="card">
-          <p className="text-sm text-slate-600">Products Analyzed</p>
-          <p className="text-3xl font-bold text-slate-900 mt-2">{elasticProducts.length}</p>
-          <p className="text-sm text-slate-500 mt-1">of {products.length} total</p>
+          <p className="text-sm text-slate-600 dark:text-slate-400">Products Analyzed</p>
+          <p className="text-3xl font-bold text-slate-900 dark:text-blue-400 mt-2">{elasticProducts.length}</p>
+          <p className="text-sm text-slate-600 dark:text-slate-400 mt-1">of {products.length} total</p>
         </div>
-        <div className="card bg-gradient-to-br from-green-50 to-emerald-50">
-          <p className="text-sm text-slate-600">Inelastic</p>
-          <p className="text-3xl font-bold text-green-600 mt-2">{inelasticCount}</p>
-          <p className="text-sm text-slate-500 mt-1">Price insensitive</p>
+        <div className="card bg-gradient-to-br from-green-50 to-emerald-50 dark:from-slate-800 dark:to-slate-700">
+          <p className="text-sm text-slate-600 dark:text-slate-400">Inelastic</p>
+          <p className="text-3xl font-bold text-green-600 dark:text-green-400 mt-2">{inelasticCount}</p>
+          <p className="text-sm text-slate-600 dark:text-slate-400 mt-1">Price insensitive</p>
         </div>
-        <div className="card bg-gradient-to-br from-red-50 to-rose-50">
+        <div className="card bg-gradient-to-br from-red-50 to-rose-50 dark:from-slate-800 dark:to-slate-700">
           <p className="text-sm text-slate-600">Elastic</p>
           <p className="text-3xl font-bold text-red-600 mt-2">{elasticCount}</p>
-          <p className="text-sm text-slate-500 mt-1">Price sensitive</p>
+          <p className="text-sm text-slate-600 dark:text-slate-400 mt-1">Price sensitive</p>
         </div>
-        <div className="card bg-gradient-to-br from-yellow-50 to-amber-50">
+        <div className="card bg-gradient-to-br from-yellow-50 to-amber-50 dark:from-slate-800 dark:to-slate-700">
           <p className="text-sm text-slate-600">Unit Elastic</p>
           <p className="text-3xl font-bold text-yellow-600 mt-2">{unitElasticCount}</p>
-          <p className="text-sm text-slate-500 mt-1">Balanced</p>
+          <p className="text-sm text-slate-600 dark:text-slate-400 mt-1">Balanced</p>
         </div>
       </div>
 
       {/* Progress */}
       {progress && (
-        <div className="card bg-gradient-to-br from-blue-50 to-primary-50">
+        <div className="card bg-gradient-to-br from-blue-50 to-primary-50 dark:from-slate-800 dark:to-slate-700">
           <h3 className="font-semibold text-slate-900 mb-2">Calculation Results</h3>
           <div className="grid grid-cols-2 gap-4 text-sm">
             <div>
@@ -144,7 +144,7 @@ function Elasticity() {
 
       {/* Products Table */}
       <div className="card">
-  <h2 className="text-lg font-semibold text-slate-900 mb-4">Product Elasticity Analysis</h2>
+  <h2 className="text-lg font-semibold text-slate-900 dark:text-white mb-4">Product Elasticity Analysis</h2>
         <div className="overflow-x-auto">
           <table className="table">
             <thead>
@@ -164,7 +164,7 @@ function Elasticity() {
             <tbody>
               {elasticProducts.length === 0 ? (
                 <tr>
-                  <td colSpan="10" className="text-center py-8 text-slate-500">
+                  <td colSpan="10" className="text-center py-8 text-slate-600 dark:text-slate-400">
                     No elasticity data available. Click "Calculate All" to analyze products.
                   </td>
                 </tr>
@@ -199,12 +199,12 @@ function Elasticity() {
                       </td>
                       <td>
                         <span
-                          className={`text-xs px-2 py-1 rounded-full bg-slate-100 whitespace-nowrap flex flex-row items-center ${
+                          className={`text-xs px-2 py-1 rounded-full bg-slate-100 dark:bg-slate-700 whitespace-nowrap flex flex-row items-center ${
                             elasticity.recommended_action === 'Decrease Price'
-                              ? 'text-red-600 font-semibold'
+                              ? 'text-red-600 dark:text-red-300 font-semibold'
                               : elasticity.recommended_action === 'Increase Price'
-                              ? 'text-green-600 font-semibold'
-                              : 'text-slate-700'
+                              ? 'text-green-600 dark:text-green-300 font-semibold'
+                              : 'text-slate-700 dark:text-slate-200'
                           }`}
                         >
                           {elasticity.recommended_action || 'N/A'}
@@ -228,33 +228,33 @@ function Elasticity() {
       </div>
 
       {/* Explanation */}
-      <div className="card bg-gradient-to-br from-blue-50 to-primary-50">
+      <div className="card bg-gradient-to-br from-blue-50 to-primary-50 dark:from-slate-800 dark:to-slate-700">
   <h3 className="font-semibold text-slate-900 mb-3">Understanding Price Elasticity</h3>
         <div className="space-y-2 text-sm text-slate-700">
           <p>
             <strong>Elasticity Coefficient:</strong> Measures % change in quantity demanded per 1% change in price
           </p>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mt-3">
-            <div className="bg-white p-3 rounded shadow-sm">
+            <div className="bg-white dark:bg-slate-700 p-3 rounded shadow-sm">
               <div className="flex items-center gap-2 mb-2">
                 <TrendingUp className="h-4 w-4 text-green-600" />
-                <strong className="text-green-600">Inelastic (|e| &lt; 1)</strong>
+                <strong className="text-green-600 dark:text-green-400">Inelastic (|e| &lt; 1)</strong>
               </div>
-              <p className="text-xs">Demand insensitive to price. Increase prices to boost revenue.</p>
+              <p className="text-xs dark:text-slate-300">Demand insensitive to price. Increase prices to boost revenue.</p>
             </div>
-            <div className="bg-white p-3 rounded shadow-sm">
+            <div className="bg-white dark:bg-slate-700 p-3 rounded shadow-sm">
               <div className="flex items-center gap-2 mb-2">
                 <TrendingDown className="h-4 w-4 text-red-600" />
-                <strong className="text-red-600">Elastic (|e| &gt; 1)</strong>
+                <strong className="text-red-600 dark:text-red-400">Elastic (|e| &gt; 1)</strong>
               </div>
-              <p className="text-xs">Demand sensitive to price. Lower prices to increase volume and revenue.</p>
+              <p className="text-xs dark:text-slate-300">Demand sensitive to price. Lower prices to increase volume and revenue.</p>
             </div>
-            <div className="bg-white p-3 rounded shadow-sm">
+            <div className="bg-white dark:bg-slate-700 p-3 rounded shadow-sm">
               <div className="flex items-center gap-2 mb-2">
                 <Minus className="h-4 w-4 text-yellow-600" />
-                <strong className="text-yellow-600">Unit Elastic (|e| ≈ 1)</strong>
+                <strong className="text-yellow-600 dark:text-yellow-400">Unit Elastic (|e| ≈ 1)</strong>
               </div>
-              <p className="text-xs">Revenue unchanged by price changes. Focus on volume or margins.</p>
+              <p className="text-xs dark:text-slate-300">Revenue unchanged by price changes. Focus on volume or margins.</p>
             </div>
           </div>
         </div>

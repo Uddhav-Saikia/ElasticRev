@@ -27,8 +27,8 @@ function Products() {
     <div className="space-y-6">
       {/* Header */}
       <div>
-  <h1 className="text-3xl font-bold text-slate-900">Products</h1>
-        <p className="text-slate-600 mt-1">Manage and analyze product pricing</p>
+  <h1 className="text-3xl font-bold text-slate-900 dark:text-white">Products</h1>
+  <p className="text-slate-400 mt-1">Manage and analyze product pricing</p>
       </div>
 
       {/* Filters */}
@@ -36,10 +36,10 @@ function Products() {
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
           <div className="md:col-span-2">
             <label className="block text-sm font-medium text-gray-700 mb-2">
-              Search Products
+              <span className="text-gray-700 dark:text-slate-400">Search Products</span>
             </label>
             <div className="relative">
-              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-slate-500" />
+              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-slate-600 dark:text-slate-400" />
               <input
                 type="text"
                 value={search}
@@ -95,33 +95,33 @@ function Products() {
                 className="card hover:shadow-lg transition-shadow group"
               >
                 <div className="flex justify-between items-start mb-3">
-                  <div>
-                    <h3 className="font-semibold text-slate-900 group-hover:text-primary-600 transition-colors">
-                      {product.name}
-                    </h3>
-                    <p className="text-sm text-slate-500">{product.sku}</p>
-                  </div>
-                  <ChevronRight className="h-5 w-5 text-slate-500 group-hover:text-primary-600" />
+                    <div>
+                      <h3 className="font-semibold text-slate-900 dark:text-slate-100 group-hover:text-primary-600 transition-colors">
+                        {product.name}
+                      </h3>
+                      <p className="text-sm text-slate-600 dark:text-slate-400">{product.sku}</p>
+                    </div>
+                    <ChevronRight className="h-5 w-5 text-slate-600 dark:text-slate-400 group-hover:text-primary-600" />
                 </div>
                 
                 <div className="space-y-2">
                   <div className="flex justify-between text-sm">
-                    <span className="text-slate-600">Category:</span>
-                    <span className="font-medium">{product.category}</span>
+                    <span className="text-slate-600 dark:text-slate-400">Category:</span>
+                    <span className="font-medium dark:text-slate-100">{product.category}</span>
                   </div>
                   <div className="flex justify-between text-sm">
-                    <span className="text-slate-600">Brand:</span>
-                    <span className="font-medium">{product.brand}</span>
+                    <span className="text-slate-600 dark:text-slate-400">Brand:</span>
+                    <span className="font-medium dark:text-slate-100">{product.brand}</span>
                   </div>
                   <div className="flex justify-between text-sm">
-                    <span className="text-slate-600">Price:</span>
-                    <span className="font-bold text-lg text-primary-600">
+                    <span className="text-slate-600 dark:text-slate-400">Price:</span>
+                    <span className="font-bold text-lg text-primary-600 dark:text-blue-400">
                       ${product.current_price}
                     </span>
                   </div>
                   <div className="flex justify-between text-sm">
-                    <span className="text-slate-600">Margin:</span>
-                    <span className={`font-medium ${product.margin >= 30 ? 'text-green-600' : 'text-yellow-600'}`}>
+                    <span className="text-slate-600 dark:text-slate-400">Margin:</span>
+                    <span className={`font-medium ${product.margin >= 30 ? 'text-green-600 dark:text-green-400' : 'text-yellow-600 dark:text-yellow-400'}`}>
                       {product.margin}%
                     </span>
                   </div>

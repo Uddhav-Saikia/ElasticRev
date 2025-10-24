@@ -44,15 +44,15 @@ function Recommendations() {
     <div className="space-y-6">
       {/* Header */}
       <div>
-  <h1 className="text-3xl font-bold text-slate-900">Pricing Recommendations</h1>
-        <p className="text-slate-600 mt-1">AI-powered optimal pricing strategies</p>
+  <h1 className="text-3xl font-bold text-slate-900 dark:text-white">Pricing Recommendations</h1>
+          <p className="text-slate-400 mt-1">AI-powered optimal pricing strategies</p>
       </div>
 
       {/* Filter */}
       <div className="card">
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
           <div className="md:col-span-2">
-            <label className="block text-sm font-medium text-gray-700 mb-2">
+            <label className="block text-sm font-medium text-gray-400 mb-2">
               Filter by Category
             </label>
             <select
@@ -80,19 +80,19 @@ function Recommendations() {
       {/* Summary Cards */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
         <div className="card bg-red-50">
-          <p className="text-sm text-slate-600">High Impact</p>
-          <p className="text-3xl font-bold text-red-600 mt-2">{highImpact.length}</p>
-          <p className="text-sm text-slate-500 mt-1">&gt;10% revenue impact</p>
+          <p className="text-sm text-slate-600 dark:text-slate-400">High Impact</p>
+          <p className="text-3xl font-bold text-red-600 dark:text-red-400 mt-2">{highImpact.length}</p>
+          <p className="text-sm text-slate-600 dark:text-slate-400 mt-1">&gt;10% revenue impact</p>
         </div>
         <div className="card bg-yellow-50">
-          <p className="text-sm text-slate-600">Medium Impact</p>
-          <p className="text-3xl font-bold text-yellow-600 mt-2">{mediumImpact.length}</p>
-          <p className="text-sm text-slate-500 mt-1">5-10% revenue impact</p>
+          <p className="text-sm text-slate-600 dark:text-slate-400">Medium Impact</p>
+          <p className="text-3xl font-bold text-yellow-600 dark:text-yellow-400 mt-2">{mediumImpact.length}</p>
+          <p className="text-sm text-slate-600 dark:text-slate-400 mt-1">5-10% revenue impact</p>
         </div>
         <div className="card bg-green-50">
-          <p className="text-sm text-slate-600">Low Impact</p>
-          <p className="text-3xl font-bold text-green-600 mt-2">{lowImpact.length}</p>
-          <p className="text-sm text-slate-500 mt-1">&lt;5% revenue impact</p>
+          <p className="text-sm text-slate-600 dark:text-slate-400">Low Impact</p>
+          <p className="text-3xl font-bold text-green-600 dark:text-green-400 mt-2">{lowImpact.length}</p>
+          <p className="text-sm text-slate-600 dark:text-slate-400 mt-1">&lt;5% revenue impact</p>
         </div>
       </div>
 
@@ -104,7 +104,7 @@ function Recommendations() {
       ) : recommendations.length === 0 ? (
         <div className="card text-center py-12">
           <p className="text-slate-600">No recommendations available</p>
-          <p className="text-sm text-slate-500 mt-2">
+          <p className="text-sm text-slate-600 dark:text-slate-400 mt-2">
             Calculate elasticity for products first
           </p>
         </div>
@@ -117,7 +117,7 @@ function Recommendations() {
                 <span className="bg-red-100 text-red-700 px-2 py-1 rounded text-sm">
                   High Priority
                 </span>
-                High Impact Opportunities
+                  <span className="dark:text-white">High Impact Opportunities</span>
               </h2>
               <div className="space-y-3">
                 {highImpact.map((rec) => (
@@ -141,7 +141,7 @@ function Recommendations() {
                         <p className="text-sm text-slate-600">Current Price</p>
                         <p className="text-lg font-bold text-slate-900">${(rec.current_price ?? 0).toFixed(2)}</p>
                       </div>
-                      <ArrowRight className="h-5 w-5 text-slate-500" />
+                      <ArrowRight className="h-5 w-5 text-slate-600 dark:text-slate-400" />
                       <div className="text-right">
                         <p className="text-sm text-slate-600">Optimal Price</p>
                         <p className="text-lg font-bold text-primary-600">${(rec.optimal_price ?? rec.current_price ?? 0).toFixed(2)}</p>
@@ -167,7 +167,7 @@ function Recommendations() {
 
           {/* All Recommendations Table */}
           <div className="card">
-            <h2 className="text-lg font-semibold text-slate-900 mb-4">All Recommendations</h2>
+            <h2 className="text-lg font-semibold text-slate-900 dark:text-white mb-4">All Recommendations</h2>
             <div className="overflow-x-auto">
               <table className="table">
                 <thead>
@@ -201,7 +201,7 @@ function Recommendations() {
                         </td>
                         <td className="text-center">
                           <span
-                            className={`text-xs px-2 py-1 rounded-full bg-slate-100 whitespace-nowrap flex flex-row items-center ${
+                            className={`text-xs px-2 py-1 rounded-full bg-slate-100 dark:bg-slate-700 whitespace-nowrap flex flex-row items-center ${
                               rec.elasticity_type === 'elastic' || rec.elasticity_type === 'highly_elastic'
                                 ? 'text-red-600 font-semibold'
                                 : rec.elasticity_type === 'inelastic'
@@ -221,7 +221,7 @@ function Recommendations() {
                                 ? 'text-green-600'
                                 : rec.elasticity_coefficient === 1
                                 ? 'text-yellow-600'
-                                : 'text-slate-500'
+                                : 'text-slate-600 dark:text-slate-400'
                             }`}
                           >
                             {rec.elasticity_coefficient ? rec.elasticity_coefficient.toFixed(2) : 'N/A'}
