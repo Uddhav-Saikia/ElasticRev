@@ -39,6 +39,27 @@ CORS(app, origins=CORS_ORIGINS)
 elasticity_calculator = ElasticityCalculator()
 scenario_simulator = ScenarioSimulator()
 
+# Database initialization flag
+_db_initialized = False
+
+def initialize_database():
+    """Initialize database and seed data on first run"""
+    global _db_initialized
+    if _db_initialized:
+        return
+    
+    with app.app_context():
+        # Create all tables
+        db.create_all()
+        
+        # Import seed function
+        from database import seed_database_if_empty
+        
+        # Seed data if database is empty
+        seed_database_if_empty(app)
+        
+        _db_initialized = True
+
 # Serve React frontend static files from dist/
 @app.route('/', defaults={'path': ''})
 @app.route('/<path:path>')
@@ -70,6 +91,9 @@ def internal_error(error):
 def health_check():
     """Health check endpoint"""
     try:
+        # Initialize database on first request
+        initialize_database()
+        
         # Check database connection
         product_count = Product.query.count()
         sales_count = Sale.query.count()
@@ -658,7 +682,7 @@ def init_db():
 
 if __name__ == '__main__':
     with app.app_context():
-        db.create_all()
+        initialize_database()
     
     print("=" * 60)
     print("🚀 ElasticRev - Dynamic Pricing Optimization API")

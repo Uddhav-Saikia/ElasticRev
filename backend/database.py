@@ -142,6 +142,21 @@ def reset_database(app):
         print("✓ Database reset complete")
 
 
+def seed_database_if_empty(app):
+    """Seed database with data from CSV if no products exist"""
+    with app.app_context():
+        product_count = Product.query.count()
+        
+        # Only seed if database is empty
+        if product_count == 0:
+            print("📊 Database is empty. Loading initial data...")
+            load_data_from_csv(app)
+            return True
+        else:
+            print(f"✓ Database already has {product_count} products. Skipping data load.")
+            return False
+
+
 if __name__ == '__main__':
     print("=" * 60)
     print("ElasticRev - Database Initialization")

@@ -4,6 +4,52 @@
 
 ElasticRev is a comprehensive data-driven pricing optimization platform that helps businesses maximize revenue and profit margins through demand elasticity analysis and intelligent pricing strategies.
 
+## ⚡ Quick Start
+
+### Local Development (5 minutes)
+
+1. **Clone and navigate**:
+   ```bash
+   cd backend && pip install -r requirements.txt
+   cd ../frontend && npm install
+   ```
+
+2. **Start backend** (Terminal 1):
+   ```bash
+   cd backend
+   python app.py
+   ```
+
+3. **Start frontend** (Terminal 2):
+   ```bash
+   cd frontend
+   npm run dev
+   ```
+
+4. **Open browser**:
+   ```
+   http://localhost:3000
+   ```
+
+✅ Database auto-initializes with sample data on first startup!
+
+### 🚀 Production Deployment (Render)
+
+**[→ See detailed Render Deployment Guide](./RENDER_DEPLOYMENT.md)**
+
+Quick deployment (requires GitHub + Render account):
+1. Create PostgreSQL database on Render
+2. Deploy backend web service (auto-seeding enabled)
+3. Deploy frontend static site
+4. Connect via environment variables
+5. Done! 🎉
+
+**Key Features**:
+- ✅ Automatic database seeding with sample data
+- ✅ Single-command setup (no manual initialization needed)
+- ✅ Zero-downtime deploys
+- ✅ Automatic HTTPS
+
 ## 🌟 Key Features
 
 ### Analytics & Modeling
