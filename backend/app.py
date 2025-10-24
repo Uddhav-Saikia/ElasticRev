@@ -19,6 +19,8 @@ from openpyxl.styles import Font, PatternFill, Alignment
 from openpyxl.chart import LineChart, Reference
 import io
 
+from flask import send_from_directory
+
 
 # Initialize Flask app
 app = Flask(__name__)
@@ -36,6 +38,17 @@ CORS(app, origins=CORS_ORIGINS)
 # Initialize calculators
 elasticity_calculator = ElasticityCalculator()
 scenario_simulator = ScenarioSimulator()
+
+# Serve React frontend static files from dist/
+@app.route('/', defaults={'path': ''})
+@app.route('/<path:path>')
+def serve_frontend(path):
+    dist_dir = os.path.join(os.path.dirname(__file__), 'dist')
+    file_path = os.path.join(dist_dir, path)
+    if path != "" and os.path.exists(file_path):
+        return send_from_directory(dist_dir, path)
+    else:
+        return send_from_directory(dist_dir, 'index.html')
 
 
 # ==================== Error Handlers ====================
