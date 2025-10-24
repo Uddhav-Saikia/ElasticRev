@@ -68,6 +68,6 @@ export const exportToExcel = (params = {}) => {
 };
 
 // Health
-export const healthCheck = () => api.get('/health');
+export const healthCheck = () => api.get('/api/health');
 
 export default api;

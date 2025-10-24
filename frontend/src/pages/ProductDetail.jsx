@@ -75,14 +75,24 @@ function ProductDetail() {
   const handleCalculateElasticity = async () => {
     setCalculating(true);
     try {
-      await calculateElasticity({
+      console.log('🚀 Starting elasticity calculation for product:', id);
+      const response = await calculateElasticity({
         product_id: parseInt(id),
         model_type: 'gradient_boosting'
       });
+      console.log('✅ Elasticity calculation response:', response);
       await refetchElasticity();
       alert('Elasticity calculated successfully!');
     } catch (error) {
-      alert('Failed to calculate elasticity: ' + error.response?.data?.error);
+      const errorMessage = error.response?.data?.error || error.message || 'Unknown error';
+      const errorStatus = error.response?.status;
+      console.error('❌ Elasticity calculation error:', {
+        message: errorMessage,
+        status: errorStatus,
+        response: error.response?.data,
+        fullError: error
+      });
+      alert('Failed to calculate elasticity: ' + errorMessage);
     } finally {
       setCalculating(false);
     }

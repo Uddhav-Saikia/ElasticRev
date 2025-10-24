@@ -22,12 +22,25 @@ function Elasticity() {
 
     setCalculating(true);
     try {
+      console.log('🚀 Starting bulk elasticity calculation for', products.length, 'products');
       const result = await bulkCalculateElasticity({});
+      console.log('✅ Bulk calculation complete:', {
+        total_calculated: result.data.total_calculated,
+        total_errors: result.data.total_errors,
+        response: result.data
+      });
       setProgress(result.data);
-      alert(`Calculation complete! ${result.data.total_calculated} products analyzed`);
+      alert(`Calculation complete! ${result.data.total_calculated} products analyzed, ${result.data.total_errors} errors`);
       await refetch();
     } catch (error) {
-      alert('Bulk calculation failed: ' + error.response?.data?.error);
+      const errorMessage = error.response?.data?.error || error.message || 'Unknown error';
+      console.error('❌ Bulk calculation error:', {
+        message: errorMessage,
+        status: error.response?.status,
+        response: error.response?.data,
+        fullError: error
+      });
+      alert('Bulk calculation failed: ' + errorMessage);
     } finally {
       setCalculating(false);
     }

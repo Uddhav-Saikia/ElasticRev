@@ -666,6 +666,49 @@ def get_dashboard_analytics_data(days=30):
         'products_with_elasticity': products_with_elasticity
     }
 
+# ==================== Diagnostics ====================
+
+@app.route('/api/diagnostics/data-quality', methods=['GET'])
+def data_quality():
+    """Check data quality for elasticity calculations - useful for debugging"""
+    try:
+        products = Product.query.all()
+        results = []
+        total_sales = 0
+        products_can_calculate = 0
+        
+        for product in products:
+            sales_count = Sale.query.filter_by(product_id=product.id).count()
+            has_elasticity = ElasticityResult.query.filter_by(product_id=product.id).first() is not None
+            can_calculate = sales_count >= 10
+            
+            if can_calculate:
+                products_can_calculate += 1
+            total_sales += sales_count
+            
+            results.append({
+                'product_id': product.id,
+                'product_name': product.name,
+                'sales_count': sales_count,
+                'can_calculate': can_calculate,
+                'has_elasticity': has_elasticity
+            })
+        
+        return jsonify({
+            'status': 'ok',
+            'total_products': len(results),
+            'total_sales': total_sales,
+            'products_with_sufficient_data': products_can_calculate,
+            'products_with_elasticity': sum(1 for r in results if r['has_elasticity']),
+            'details': results
+        })
+    except Exception as e:
+        return jsonify({
+            'status': 'error',
+            'error': str(e),
+            'trace': traceback.format_exc()
+        }), 500
+
 @app.route('/api/export/excel', methods=['GET'])
 def export_to_excel():
     """Export comprehensive pricing strategy report to Excel"""
