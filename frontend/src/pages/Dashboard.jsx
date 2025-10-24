@@ -63,7 +63,7 @@ function StatCard({ title, value, icon: Icon, trend, color = 'primary' }) {
 function Dashboard() {
   const [days, setDays] = React.useState(30);
 
-  const { data: analytics, isLoading, refetch } = useQuery(
+  const { data: analytics, isLoading, error: analyticsError, refetch } = useQuery(
     ['dashboard', days],
     () => getDashboardAnalytics(days).then(res => res.data),
     {
@@ -102,7 +102,41 @@ function Dashboard() {
     );
   }
 
-  const { overall, by_category, elasticity_distribution, top_products } = analytics || {};
+  if (analyticsError) {
+    console.error('Dashboard analytics error:', {
+      message: analyticsError.message,
+      status: analyticsError.response?.status,
+      data: analyticsError.response?.data
+    });
+    return (
+      <div className="card bg-red-50 text-red-800 p-8">
+        <h2 className="text-xl font-bold mb-2">Error Loading Dashboard</h2>
+        <p className="mb-4">{analyticsError.response?.data?.error || analyticsError.message || 'Unknown error'}</p>
+        <button 
+          onClick={() => refetch()}
+          className="btn btn-primary"
+        >
+          Retry
+        </button>
+      </div>
+    );
+  }
+
+  if (!analytics) {
+    return (
+      <div className="card text-center py-12">
+        <p className="text-gray-600">No analytics data available</p>
+        <button 
+          onClick={() => refetch()}
+          className="btn btn-primary mt-4"
+        >
+          Retry
+        </button>
+      </div>
+    );
+  }
+
+  const { overall, by_category, elasticity_distribution, top_products } = analytics;
 
   return (
     <div className="space-y-8">
